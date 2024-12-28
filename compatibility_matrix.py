@@ -8,7 +8,7 @@ from io import StringIO
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-class EncoderConfiguration:
+class CompatibilityMatrix:
 
     def __init__(self):
         self.formats = sorted(av.formats_available)
@@ -134,22 +134,13 @@ class EncoderConfiguration:
             }
 
             compatibility_matrix.append(data)
-            # except:
-            #     pass
 
         return compatibility_matrix
-
-    def getMatrixJson(self):
-        compatibility_matrix = self.buildMatrix()
-        pretty_settings = json.dumps(compatibility_matrix, indent=4)
-        print(pretty_settings)
 
     def testEncode(self, container_format, codec_name, type):
         devnull = "NUL" if sys.platform.startswith("win") else "/dev/null"
 
-        timeout_seconds = 10
-
-        encoder = "c:v"
+        # timeout_seconds = 10
 
         command_video = [
             "ffmpeg",
@@ -185,7 +176,7 @@ class EncoderConfiguration:
                 command,
                 capture_output=True,
                 text=True,
-                timeout=timeout_seconds
+                # timeout=timeout_seconds
             )
             # print(result.stderr)   # <-- Use `stderr` (not `sterr`)
             if any(msg in result.stderr for msg in [
@@ -199,7 +190,6 @@ class EncoderConfiguration:
             return (result.returncode == 0)
         #
         except subprocess.TimeoutExpired:
-            # print("TIMEOUT")
             return False
         except Exception:
             return False
@@ -213,32 +203,16 @@ class EncoderConfiguration:
         else:
             codec_list = self.codec_list_audio
 
-        # item = 0
-        # for codec_name in codec_list:
-        #     item += 1
-        #     result = self.testEncode(format_name, codec_name, type)
-        #     if result:
-        #         compatible_codecs.append(codec_name)
-        #
-        # print(f"\t\tCompatible {type} codecs: {compatible_codecs}")
-        # return compatible_codecs
-        #
-        #
-        #     compatible_codecs = []
-
-        # Use a ThreadPoolExecutor to run up to 5 threads at once
-        with ThreadPoolExecutor(max_workers=50) as executor:
-            # Submit all tasks to the executor
+        with ThreadPoolExecutor(max_workers=100) as executor:
             future_to_codec = {
                 executor.submit(self.testEncode, format_name, codec_name, type): codec_name
                 for codec_name in codec_list
             }
 
-            # Collect results as they complete
             for future in as_completed(future_to_codec):
                 codec_name = future_to_codec[future]
                 try:
-                    result = future.result()  # Get the result of the testEncode call
+                    result = future.result()
                     if result:
                         compatible_codecs.append(codec_name)
                 except Exception as e:
@@ -247,8 +221,12 @@ class EncoderConfiguration:
         print(f"\t\tCompatible {type} codecs: {compatible_codecs}")
         return compatible_codecs
 
+    def buildCompatibilityMatrix(self):
+        compatibility_matrix = self.buildMatrix()
+        pretty_settings = json.dumps(compatibility_matrix, indent=4)
+        print(pretty_settings)
 
 if __name__ == "__main__":
 
-    encoder_config = EncoderConfiguration()
-    encoder_config.getMatrixJson()
+    compatibility_matrix = CompatibilityMatrix()
+    compatibility_matrix.buildCompatibilityMatrix()
