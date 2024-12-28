@@ -1,5 +1,4 @@
 import av
-# import io
 import json
 import re
 import csv
@@ -7,7 +6,6 @@ import os
 import sys
 import subprocess
 
-# from io import StringIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 if getattr(sys, 'frozen', False):
@@ -21,8 +19,10 @@ class CompatibilityMatrix:
         self.formats = sorted(av.formats_available)
         self.codecs = sorted(av.codecs_available)
         self.matrix_file = os.path.join(RUNPATH, "compatibility_matrix.json")
+        self.codec_matrix_file = os.path.join(RUNPATH, "codec_matrix.json")
         self.codec_list_video = self.buildCodecList("video")
         self.codec_list_audio = self.buildCodecList("audio")
+        self.no_workers = 200
 
     def buildCodecList(self, type):
         codec_list = []
@@ -75,7 +75,7 @@ class CompatibilityMatrix:
 
         return muxers
 
-    def buildMatrix(self):
+    def buildEncoderMatrix(self):
         compatibility_matrix = []
         muxers = self.getMuxers()
         output_formats = []
@@ -105,12 +105,6 @@ class CompatibilityMatrix:
                 options = []
             options.sort()
 
-            if fmt.descriptor and hasattr(fmt.descriptor, 'options') and fmt.descriptor.options:
-                desc_options = [option.name for option in fmt.descriptor.options]
-            else:
-                desc_options = []
-            desc_options.sort()
-
             if fmt.descriptor and hasattr(fmt.descriptor, 'name') and fmt.descriptor.name:
                 muxer = fmt.descriptor.name
             else:
@@ -125,9 +119,12 @@ class CompatibilityMatrix:
 
             muxers_list.sort()
 
-            print(f"({item}/{len(output_formats)}) Checking codec compatibility for {format_name}")
+            print(f"({item}/{len(output_formats)}) Checking codec compatibility for encoder: {format_name}")
             compatible_video_codecs = self.getCompatibleCodecs(format_name, "video")
             compatible_audio_codecs = self.getCompatibleCodecs(format_name, "audio")
+
+            compatible_video_codecs.sort()
+            compatible_audio_codecs.sort()
 
             data = {
                 "format_name": format_name,
@@ -136,7 +133,6 @@ class CompatibilityMatrix:
                 "extensions": file_extensions,
                 "muxer": muxer,
                 "available_muxers": muxers_list,
-                "muxer_options": desc_options,
                 "compatible_video_codecs": compatible_video_codecs,
                 "compatible_audio_codecs": compatible_audio_codecs
             }
@@ -206,7 +202,7 @@ class CompatibilityMatrix:
         else:
             codec_list = self.codec_list_audio
 
-        with ThreadPoolExecutor(max_workers=100) as executor:
+        with ThreadPoolExecutor(max_workers=self.no_workers) as executor:
             future_to_codec = {
                 executor.submit(
                     self.testEncode, format_name, codec_name, type
@@ -221,13 +217,50 @@ class CompatibilityMatrix:
                     if result:
                         compatible_codecs.append(codec_name)
                 except Exception as e:
-                    print(f"Error testing codec {codec_name}: {e}")
+                    print(f"\tError testing codec {codec_name}: {e}")
 
-        print(f"\t\tCompatible {type} codecs: {compatible_codecs}")
+        print(f"\t{type} codecs: {len(compatible_codecs)}")
         return compatible_codecs
 
+
+    def buildCodecMatrix(self):
+        codec_matrix = []
+        for codec_name in self.codecs:
+            try:
+                cdc = av.codec.Codec(codec_name, mode='w')
+            except Exception as e:
+                continue
+
+            if cdc.is_encoder:
+
+                if cdc and hasattr(cdc, 'video_formats') and cdc.video_formats:
+                    video_formats = [format.name for format in cdc.video_formats]
+                else:
+                    video_formats = []
+                video_formats.sort()
+
+                if cdc and hasattr(cdc, 'audio_formats') and cdc.audio_formats:
+                    audio_formats = [format.name for format in cdc.audio_formats]
+                else:
+                    audio_formats = []
+                audio_formats.sort()
+
+                data = {
+                    "name": codec_name,
+                    "long_name": cdc.long_name,
+                    "type": cdc.type,
+                    "video_formats": video_formats,
+                    "audio_formats": audio_formats,
+                }
+
+                codec_matrix.append(data)
+
+        formatted_matrix = json.dumps(codec_matrix, indent=4)
+        with open(self.codec_matrix_file, "w") as f:
+            f.write(formatted_matrix)
+
     def buildCompatibilityMatrix(self):
-        compatibility_matrix = self.buildMatrix()
+        compatibility_matrix = self.buildEncoderMatrix()
         formatted_matrix = json.dumps(compatibility_matrix, indent=4)
         with open(self.matrix_file, "w") as f:
             f.write(formatted_matrix)
@@ -235,4 +268,5 @@ class CompatibilityMatrix:
 if __name__ == "__main__":
 
     compatibility_matrix = CompatibilityMatrix()
-    compatibility_matrix.buildCompatibilityMatrix()
+    # compatibility_matrix.buildCompatibilityMatrix()
+    compatibility_matrix.buildCodecMatrix()

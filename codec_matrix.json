@@ -1,0 +1,2385 @@
+[
+    {
+        "name": "a64multi",
+        "long_name": "Multicolor charset for Commodore 64",
+        "type": "video",
+        "video_formats": [
+            "gray"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "a64multi5",
+        "long_name": "Multicolor charset for Commodore 64, extended with 5th color (colram)",
+        "type": "video",
+        "video_formats": [
+            "gray"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "aac",
+        "long_name": "AAC (Advanced Audio Coding)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "aac_at",
+        "long_name": "aac (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "ac3",
+        "long_name": "ATSC A/52A (AC-3)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "ac3_fixed",
+        "long_name": "ATSC A/52A (AC-3)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32p"
+        ]
+    },
+    {
+        "name": "adpcm_adx",
+        "long_name": "SEGA CRI ADX ADPCM",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_argo",
+        "long_name": "ADPCM Argonaut Games",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p"
+        ]
+    },
+    {
+        "name": "adpcm_ima_alp",
+        "long_name": "ADPCM IMA High Voltage Software ALP",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_ima_amv",
+        "long_name": "ADPCM IMA AMV",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_ima_apm",
+        "long_name": "ADPCM IMA Ubisoft APM",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_ima_qt",
+        "long_name": "ADPCM IMA QuickTime",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p"
+        ]
+    },
+    {
+        "name": "adpcm_ima_ssi",
+        "long_name": "ADPCM IMA Simon & Schuster Interactive",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_ima_wav",
+        "long_name": "ADPCM IMA WAV",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p"
+        ]
+    },
+    {
+        "name": "adpcm_ima_ws",
+        "long_name": "ADPCM IMA Westwood",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_ms",
+        "long_name": "ADPCM Microsoft",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_swf",
+        "long_name": "ADPCM Shockwave Flash",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "adpcm_yamaha",
+        "long_name": "ADPCM Yamaha",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "alac",
+        "long_name": "ALAC (Apple Lossless Audio Codec)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p",
+            "s32p"
+        ]
+    },
+    {
+        "name": "alac_at",
+        "long_name": "alac (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "alias_pix",
+        "long_name": "Alias/Wavefront PIX image",
+        "type": "video",
+        "video_formats": [
+            "bgr24",
+            "gray"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "amv",
+        "long_name": "AMV Video",
+        "type": "video",
+        "video_formats": [
+            "yuvj420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "anull",
+        "long_name": "null audio",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "dbl",
+            "dblp",
+            "flt",
+            "fltp",
+            "s16",
+            "s16p",
+            "s32",
+            "s32p",
+            "s64",
+            "s64p",
+            "u8",
+            "u8p"
+        ]
+    },
+    {
+        "name": "apng",
+        "long_name": "APNG (Animated Portable Network Graphics) image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16be",
+            "pal8",
+            "rgb24",
+            "rgb48be",
+            "rgba",
+            "rgba64be",
+            "ya16be",
+            "ya8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "aptx",
+        "long_name": "aptX (Audio Processing Technology for Bluetooth)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32p"
+        ]
+    },
+    {
+        "name": "aptx_hd",
+        "long_name": "aptX HD (Audio Processing Technology for Bluetooth)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32p"
+        ]
+    },
+    {
+        "name": "ass",
+        "long_name": "ASS (Advanced SubStation Alpha) subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "asv1",
+        "long_name": "ASUS V1",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "asv2",
+        "long_name": "ASUS V2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "av1",
+        "long_name": "libaom AV1",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "avrp",
+        "long_name": "Avid 1:1 10-bit RGB Packer",
+        "type": "video",
+        "video_formats": [
+            "gbrp10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "avui",
+        "long_name": "Avid Meridien Uncompressed",
+        "type": "video",
+        "video_formats": [
+            "uyvy422"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "bitpacked",
+        "long_name": "Bitpacked",
+        "type": "video",
+        "video_formats": [
+            "yuv422p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "bmp",
+        "long_name": "BMP (Windows and OS/2 bitmap)",
+        "type": "video",
+        "video_formats": [
+            "bgr24",
+            "bgr4_byte",
+            "bgr8",
+            "bgra",
+            "gray",
+            "monob",
+            "pal8",
+            "rgb444le",
+            "rgb4_byte",
+            "rgb555le",
+            "rgb565le",
+            "rgb8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "cfhd",
+        "long_name": "GoPro CineForm HD",
+        "type": "video",
+        "video_formats": [
+            "gbrap12le",
+            "gbrp12le",
+            "yuv422p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "cinepak",
+        "long_name": "Cinepak",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "rgb24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "cljr",
+        "long_name": "Cirrus Logic AccuPak",
+        "type": "video",
+        "video_formats": [
+            "yuv411p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "comfortnoise",
+        "long_name": "RFC 3389 comfort noise generator",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "dca",
+        "long_name": "DCA (DTS Coherent Acoustics)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "dfpwm",
+        "long_name": "DFPWM1a audio",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "u8"
+        ]
+    },
+    {
+        "name": "dirac",
+        "long_name": "SMPTE VC-2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "dnxhd",
+        "long_name": "VC3/DNxHD",
+        "type": "video",
+        "video_formats": [
+            "gbrp10le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv444p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "dpx",
+        "long_name": "DPX (Digital Picture Exchange) image",
+        "type": "video",
+        "video_formats": [
+            "abgr",
+            "gbrp10be",
+            "gbrp10le",
+            "gbrp12be",
+            "gbrp12le",
+            "gray",
+            "gray16be",
+            "gray16le",
+            "rgb24",
+            "rgb48be",
+            "rgb48le",
+            "rgba",
+            "rgba64be",
+            "rgba64le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "dvbsub",
+        "long_name": "DVB subtitles",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "dvdsub",
+        "long_name": "DVD subtitles",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "dvvideo",
+        "long_name": "DV (Digital Video)",
+        "type": "video",
+        "video_formats": [
+            "yuv411p",
+            "yuv420p",
+            "yuv422p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "dxv",
+        "long_name": "Resolume DXV",
+        "type": "video",
+        "video_formats": [
+            "rgba"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "eac3",
+        "long_name": "ATSC A/52 E-AC-3",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "exr",
+        "long_name": "OpenEXR image",
+        "type": "video",
+        "video_formats": [
+            "gbrapf32le",
+            "gbrpf32le",
+            "grayf32le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "ffv1",
+        "long_name": "FFmpeg video codec #1",
+        "type": "video",
+        "video_formats": [
+            "bgr0",
+            "bgra",
+            "gbrap10le",
+            "gbrap12le",
+            "gbrap14le",
+            "gbrap16le",
+            "gbrp10le",
+            "gbrp12le",
+            "gbrp14le",
+            "gbrp16le",
+            "gbrp9le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "gray14le",
+            "gray16le",
+            "gray9le",
+            "rgb48le",
+            "rgba64le",
+            "ya8",
+            "yuv410p",
+            "yuv411p",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv420p14le",
+            "yuv420p16le",
+            "yuv420p9le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv422p14le",
+            "yuv422p16le",
+            "yuv422p9le",
+            "yuv440p",
+            "yuv440p10le",
+            "yuv440p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le",
+            "yuv444p14le",
+            "yuv444p16le",
+            "yuv444p9le",
+            "yuva420p",
+            "yuva420p10le",
+            "yuva420p16le",
+            "yuva420p9le",
+            "yuva422p",
+            "yuva422p10le",
+            "yuva422p12le",
+            "yuva422p16le",
+            "yuva422p9le",
+            "yuva444p",
+            "yuva444p10le",
+            "yuva444p12le",
+            "yuva444p16le",
+            "yuva444p9le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "ffvhuff",
+        "long_name": "Huffyuv FFmpeg variant",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "gbrap",
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gbrp14le",
+            "gbrp16le",
+            "gbrp9le",
+            "gray",
+            "gray16le",
+            "rgb24",
+            "yuv410p",
+            "yuv411p",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv420p14le",
+            "yuv420p16le",
+            "yuv420p9le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv422p14le",
+            "yuv422p16le",
+            "yuv422p9le",
+            "yuv440p",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le",
+            "yuv444p14le",
+            "yuv444p16le",
+            "yuv444p9le",
+            "yuva420p",
+            "yuva420p10le",
+            "yuva420p16le",
+            "yuva420p9le",
+            "yuva422p",
+            "yuva422p10le",
+            "yuva422p16le",
+            "yuva422p9le",
+            "yuva444p",
+            "yuva444p10le",
+            "yuva444p16le",
+            "yuva444p9le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "fits",
+        "long_name": "Flexible Image Transport System",
+        "type": "video",
+        "video_formats": [
+            "gbrap",
+            "gbrap16be",
+            "gbrp",
+            "gbrp16be",
+            "gray",
+            "gray16be"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "flac",
+        "long_name": "FLAC (Free Lossless Audio Codec)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "s32"
+        ]
+    },
+    {
+        "name": "flashsv",
+        "long_name": "Flash Screen Video",
+        "type": "video",
+        "video_formats": [
+            "bgr24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "flashsv2",
+        "long_name": "Flash Screen Video Version 2",
+        "type": "video",
+        "video_formats": [
+            "bgr24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "flv",
+        "long_name": "FLV / Sorenson Spark / Sorenson H.263 (Flash Video)",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "g722",
+        "long_name": "G.722 ADPCM",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "g723_1",
+        "long_name": "G.723.1",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "g726",
+        "long_name": "G.726 ADPCM",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "g726le",
+        "long_name": "G.726 little endian ADPCM (\"right-justified\")",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "gif",
+        "long_name": "GIF (Graphics Interchange Format)",
+        "type": "video",
+        "video_formats": [
+            "bgr4_byte",
+            "bgr8",
+            "gray",
+            "pal8",
+            "rgb4_byte",
+            "rgb8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "h261",
+        "long_name": "H.261",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "h263",
+        "long_name": "H.263 / H.263-1996",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "h263p",
+        "long_name": "H.263+ / H.263-1998 / H.263 version 2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "h264",
+        "long_name": "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray10le",
+            "nv12",
+            "nv16",
+            "nv20le",
+            "nv21",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "h264_videotoolbox",
+        "long_name": "VideoToolbox H.264 Encoder",
+        "type": "video",
+        "video_formats": [
+            "nv12",
+            "videotoolbox_vld",
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "hdr",
+        "long_name": "HDR (Radiance RGBE format) image",
+        "type": "video",
+        "video_formats": [
+            "gbrpf32le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "hevc",
+        "long_name": "libx265 H.265 / HEVC",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "hevc_videotoolbox",
+        "long_name": "VideoToolbox H.265 Encoder",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "nv12",
+            "p010le",
+            "videotoolbox_vld",
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "huffyuv",
+        "long_name": "Huffyuv / HuffYUV",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "rgb24",
+            "yuv422p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "ilbc",
+        "long_name": "ilbc (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "ilbc_at",
+        "long_name": "ilbc (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "jpeg2000",
+        "long_name": "JPEG 2000",
+        "type": "video",
+        "video_formats": [
+            "gbrap",
+            "gbrap10le",
+            "gbrap12le",
+            "gbrap16le",
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gbrp14le",
+            "gbrp16le",
+            "gbrp9le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "gray14le",
+            "gray16le",
+            "gray9le",
+            "pal8",
+            "rgb24",
+            "rgb48le",
+            "rgba",
+            "rgba64le",
+            "ya16le",
+            "ya8",
+            "yuv410p",
+            "yuv411p",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv420p14le",
+            "yuv420p16le",
+            "yuv420p9le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv422p14le",
+            "yuv422p16le",
+            "yuv422p9le",
+            "yuv440p",
+            "yuv440p10le",
+            "yuv440p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le",
+            "yuv444p14le",
+            "yuv444p16le",
+            "yuv444p9le",
+            "yuva420p",
+            "yuva420p10le",
+            "yuva420p16le",
+            "yuva420p9le",
+            "yuva422p",
+            "yuva422p10le",
+            "yuva422p16le",
+            "yuva422p9le",
+            "yuva444p",
+            "yuva444p10le",
+            "yuva444p16le",
+            "yuva444p9le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "jpegls",
+        "long_name": "JPEG-LS",
+        "type": "video",
+        "video_formats": [
+            "bgr24",
+            "gray",
+            "gray16le",
+            "rgb24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libaom-av1",
+        "long_name": "libaom AV1",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libmp3lame",
+        "long_name": "libmp3lame MP3 (MPEG audio layer 3)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp",
+            "s16p",
+            "s32p"
+        ]
+    },
+    {
+        "name": "libopencore_amrnb",
+        "long_name": "OpenCORE AMR-NB (Adaptive Multi-Rate Narrow-Band)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "libopus",
+        "long_name": "libopus Opus",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "flt",
+            "s16"
+        ]
+    },
+    {
+        "name": "libspeex",
+        "long_name": "libspeex Speex",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "libtwolame",
+        "long_name": "libtwolame MP2 (MPEG audio layer 2)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "flt",
+            "fltp",
+            "s16",
+            "s16p"
+        ]
+    },
+    {
+        "name": "libvorbis",
+        "long_name": "libvorbis",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "libvpx",
+        "long_name": "libvpx VP8",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libvpx-vp9",
+        "long_name": "libvpx VP9",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "yuv420p",
+            "yuv422p",
+            "yuv440p",
+            "yuv444p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libwebp",
+        "long_name": "libwebp WebP image",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "yuv420p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libwebp_anim",
+        "long_name": "libwebp WebP image",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "yuv420p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libx264",
+        "long_name": "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray10le",
+            "nv12",
+            "nv16",
+            "nv20le",
+            "nv21",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libx264rgb",
+        "long_name": "libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB",
+        "type": "video",
+        "video_formats": [
+            "bgr0",
+            "bgr24",
+            "rgb24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "libx265",
+        "long_name": "libx265 H.265 / HEVC",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "gbrp10le",
+            "gbrp12le",
+            "gray",
+            "gray10le",
+            "gray12le",
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "ljpeg",
+        "long_name": "Lossless JPEG",
+        "type": "video",
+        "video_formats": [
+            "bgr0",
+            "bgr24",
+            "bgra",
+            "yuv420p",
+            "yuv422p",
+            "yuv444p",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "magicyuv",
+        "long_name": "MagicYUV video",
+        "type": "video",
+        "video_formats": [
+            "gbrap",
+            "gbrp",
+            "gray",
+            "yuv420p",
+            "yuv422p",
+            "yuv444p",
+            "yuva444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "mjpeg",
+        "long_name": "MJPEG (Motion JPEG)",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv422p",
+            "yuv444p",
+            "yuvj420p",
+            "yuvj422p",
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "mlp",
+        "long_name": "MLP (Meridian Lossless Packing)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p",
+            "s32p"
+        ]
+    },
+    {
+        "name": "mov_text",
+        "long_name": "3GPP Timed Text subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "mp2",
+        "long_name": "MP2 (MPEG audio layer 2)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "mp2fixed",
+        "long_name": "MP2 fixed point (MPEG audio layer 2)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "mp3",
+        "long_name": "libmp3lame MP3 (MPEG audio layer 3)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp",
+            "s16p",
+            "s32p"
+        ]
+    },
+    {
+        "name": "mpeg1video",
+        "long_name": "MPEG-1 video",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "mpeg2video",
+        "long_name": "MPEG-2 video",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv422p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "mpeg4",
+        "long_name": "MPEG-4 part 2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "msmpeg4",
+        "long_name": "MPEG-4 part 2 Microsoft variant version 3",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "msmpeg4v2",
+        "long_name": "MPEG-4 part 2 Microsoft variant version 2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "msrle",
+        "long_name": "Microsoft RLE",
+        "type": "video",
+        "video_formats": [
+            "pal8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "msvideo1",
+        "long_name": "Microsoft Video-1",
+        "type": "video",
+        "video_formats": [
+            "rgb555le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "nellymoser",
+        "long_name": "Nellymoser Asao",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "flt"
+        ]
+    },
+    {
+        "name": "opus",
+        "long_name": "Opus",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "pam",
+        "long_name": "PAM (Portable AnyMap) image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16be",
+            "monob",
+            "rgb24",
+            "rgb48be",
+            "rgba",
+            "rgba64be",
+            "ya16be",
+            "ya8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "pbm",
+        "long_name": "PBM (Portable BitMap) image",
+        "type": "video",
+        "video_formats": [
+            "monow"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "pcm_alaw",
+        "long_name": "PCM A-law / G.711 A-law",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_alaw_at",
+        "long_name": "pcm_alaw (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "pcm_bluray",
+        "long_name": "PCM signed 16|20|24-bit big-endian for Blu-ray media",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_dvd",
+        "long_name": "PCM signed 16|20|24-bit big-endian for DVD media",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_f32be",
+        "long_name": "PCM 32-bit floating point big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "flt"
+        ]
+    },
+    {
+        "name": "pcm_f32le",
+        "long_name": "PCM 32-bit floating point little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "flt"
+        ]
+    },
+    {
+        "name": "pcm_f64be",
+        "long_name": "PCM 64-bit floating point big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "dbl"
+        ]
+    },
+    {
+        "name": "pcm_f64le",
+        "long_name": "PCM 64-bit floating point little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "dbl"
+        ]
+    },
+    {
+        "name": "pcm_mulaw",
+        "long_name": "PCM mu-law / G.711 mu-law",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_mulaw_at",
+        "long_name": "pcm_mulaw (AudioToolbox)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "u8"
+        ]
+    },
+    {
+        "name": "pcm_s16be",
+        "long_name": "PCM signed 16-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_s16be_planar",
+        "long_name": "PCM signed 16-bit big-endian planar",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p"
+        ]
+    },
+    {
+        "name": "pcm_s16le",
+        "long_name": "PCM signed 16-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_s16le_planar",
+        "long_name": "PCM signed 16-bit little-endian planar",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p"
+        ]
+    },
+    {
+        "name": "pcm_s24be",
+        "long_name": "PCM signed 24-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_s24daud",
+        "long_name": "PCM D-Cinema audio signed 24-bit",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_s24le",
+        "long_name": "PCM signed 24-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_s24le_planar",
+        "long_name": "PCM signed 24-bit little-endian planar",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32p"
+        ]
+    },
+    {
+        "name": "pcm_s32be",
+        "long_name": "PCM signed 32-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_s32le",
+        "long_name": "PCM signed 32-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_s32le_planar",
+        "long_name": "PCM signed 32-bit little-endian planar",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32p"
+        ]
+    },
+    {
+        "name": "pcm_s64be",
+        "long_name": "PCM signed 64-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s64"
+        ]
+    },
+    {
+        "name": "pcm_s64le",
+        "long_name": "PCM signed 64-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s64"
+        ]
+    },
+    {
+        "name": "pcm_s8",
+        "long_name": "PCM signed 8-bit",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "u8"
+        ]
+    },
+    {
+        "name": "pcm_s8_planar",
+        "long_name": "PCM signed 8-bit planar",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "u8p"
+        ]
+    },
+    {
+        "name": "pcm_u16be",
+        "long_name": "PCM unsigned 16-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_u16le",
+        "long_name": "PCM unsigned 16-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcm_u24be",
+        "long_name": "PCM unsigned 24-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_u24le",
+        "long_name": "PCM unsigned 24-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_u32be",
+        "long_name": "PCM unsigned 32-bit big-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_u32le",
+        "long_name": "PCM unsigned 32-bit little-endian",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s32"
+        ]
+    },
+    {
+        "name": "pcm_u8",
+        "long_name": "PCM unsigned 8-bit",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "u8"
+        ]
+    },
+    {
+        "name": "pcm_vidc",
+        "long_name": "PCM Archimedes VIDC",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "pcx",
+        "long_name": "PC Paintbrush PCX image",
+        "type": "video",
+        "video_formats": [
+            "bgr4_byte",
+            "bgr8",
+            "gray",
+            "monob",
+            "pal8",
+            "rgb24",
+            "rgb4_byte",
+            "rgb8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "pfm",
+        "long_name": "PFM (Portable FloatMap) image",
+        "type": "video",
+        "video_formats": [
+            "gbrpf32be",
+            "gbrpf32le",
+            "grayf32be",
+            "grayf32le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "pgm",
+        "long_name": "PGM (Portable GrayMap) image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16be"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "pgmyuv",
+        "long_name": "PGMYUV (Portable GrayMap YUV) image",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv420p16be"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "phm",
+        "long_name": "PHM (Portable HalfFloatMap) image",
+        "type": "video",
+        "video_formats": [
+            "gbrpf32le",
+            "grayf32le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "png",
+        "long_name": "PNG (Portable Network Graphics) image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16be",
+            "monob",
+            "pal8",
+            "rgb24",
+            "rgb48be",
+            "rgba",
+            "rgba64be",
+            "ya16be",
+            "ya8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "ppm",
+        "long_name": "PPM (Portable PixelMap) image",
+        "type": "video",
+        "video_formats": [
+            "rgb24",
+            "rgb48be"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "prores",
+        "long_name": "Apple ProRes",
+        "type": "video",
+        "video_formats": [
+            "yuv422p10le",
+            "yuv444p10le",
+            "yuva444p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "prores_aw",
+        "long_name": "Apple ProRes",
+        "type": "video",
+        "video_formats": [
+            "yuv422p10le",
+            "yuv444p10le",
+            "yuva444p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "prores_ks",
+        "long_name": "Apple ProRes (iCodec Pro)",
+        "type": "video",
+        "video_formats": [
+            "yuv422p10le",
+            "yuv444p10le",
+            "yuva444p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "prores_videotoolbox",
+        "long_name": "VideoToolbox ProRes Encoder",
+        "type": "video",
+        "video_formats": [
+            "ayuv64le",
+            "bgra",
+            "nv12",
+            "nv16",
+            "nv24",
+            "p010le",
+            "p210le",
+            "p216le",
+            "p410le",
+            "p416le",
+            "uyvy422",
+            "videotoolbox_vld",
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "qoi",
+        "long_name": "QOI (Quite OK Image format) image",
+        "type": "video",
+        "video_formats": [
+            "rgb24",
+            "rgba"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "qtrle",
+        "long_name": "QuickTime Animation (RLE) video",
+        "type": "video",
+        "video_formats": [
+            "argb",
+            "gray",
+            "rgb24",
+            "rgb555be"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "r10k",
+        "long_name": "AJA Kona 10-bit RGB Codec",
+        "type": "video",
+        "video_formats": [
+            "gbrp10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "r210",
+        "long_name": "Uncompressed RGB 10-bit",
+        "type": "video",
+        "video_formats": [
+            "gbrp10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "rawvideo",
+        "long_name": "raw video",
+        "type": "video",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "real_144",
+        "long_name": "RealAudio 1.0 (14.4K)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "roq_dpcm",
+        "long_name": "id RoQ DPCM",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "roqvideo",
+        "long_name": "id RoQ video",
+        "type": "video",
+        "video_formats": [
+            "yuvj444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "rpza",
+        "long_name": "QuickTime video (RPZA)",
+        "type": "video",
+        "video_formats": [
+            "rgb555le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "rv10",
+        "long_name": "RealVideo 1.0",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "rv20",
+        "long_name": "RealVideo 2.0",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "s302m",
+        "long_name": "SMPTE 302M",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "s32"
+        ]
+    },
+    {
+        "name": "sbc",
+        "long_name": "SBC (low-complexity subband codec)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "sgi",
+        "long_name": "SGI image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16be",
+            "gray16le",
+            "rgb24",
+            "rgb48be",
+            "rgb48le",
+            "rgba",
+            "rgba64be",
+            "rgba64le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "smc",
+        "long_name": "QuickTime Graphics (SMC)",
+        "type": "video",
+        "video_formats": [
+            "pal8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "snow",
+        "long_name": "Snow",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "yuv410p",
+            "yuv420p",
+            "yuv444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "sonic",
+        "long_name": "Sonic",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "sonicls",
+        "long_name": "Sonic lossless",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "speedhq",
+        "long_name": "NewTek SpeedHQ",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv422p",
+            "yuv444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "speex",
+        "long_name": "libspeex Speex",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16"
+        ]
+    },
+    {
+        "name": "srt",
+        "long_name": "SubRip subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "ssa",
+        "long_name": "ASS (Advanced SubStation Alpha) subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "subrip",
+        "long_name": "SubRip subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "sunrast",
+        "long_name": "Sun Rasterfile image",
+        "type": "video",
+        "video_formats": [
+            "bgr24",
+            "gray",
+            "monow",
+            "pal8"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "svq1",
+        "long_name": "Sorenson Vector Quantizer 1 / Sorenson Video 1 / SVQ1",
+        "type": "video",
+        "video_formats": [
+            "yuv410p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "targa",
+        "long_name": "Truevision Targa image",
+        "type": "video",
+        "video_formats": [
+            "bgr24",
+            "bgra",
+            "gray",
+            "pal8",
+            "rgb555le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "text",
+        "long_name": "Raw text subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "tiff",
+        "long_name": "TIFF image",
+        "type": "video",
+        "video_formats": [
+            "gray",
+            "gray16le",
+            "monob",
+            "monow",
+            "pal8",
+            "rgb24",
+            "rgb48le",
+            "rgba",
+            "rgba64le",
+            "ya16le",
+            "ya8",
+            "yuv410p",
+            "yuv411p",
+            "yuv420p",
+            "yuv422p",
+            "yuv440p",
+            "yuv444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "truehd",
+        "long_name": "TrueHD",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16p",
+            "s32p"
+        ]
+    },
+    {
+        "name": "tta",
+        "long_name": "TTA (True Audio)",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "s16",
+            "s32",
+            "u8"
+        ]
+    },
+    {
+        "name": "ttml",
+        "long_name": "TTML subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "utvideo",
+        "long_name": "Ut Video",
+        "type": "video",
+        "video_formats": [
+            "gbrap",
+            "gbrp",
+            "yuv420p",
+            "yuv422p",
+            "yuv444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "v210",
+        "long_name": "Uncompressed 4:2:2 10-bit",
+        "type": "video",
+        "video_formats": [
+            "yuv422p",
+            "yuv422p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "v308",
+        "long_name": "Uncompressed packed 4:4:4",
+        "type": "video",
+        "video_formats": [
+            "yuv444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "v408",
+        "long_name": "Uncompressed packed QT 4:4:4:4",
+        "type": "video",
+        "video_formats": [
+            "yuva444p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "v410",
+        "long_name": "Uncompressed 4:4:4 10-bit",
+        "type": "video",
+        "video_formats": [
+            "yuv444p10le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "vbn",
+        "long_name": "Vizrt Binary Image",
+        "type": "video",
+        "video_formats": [
+            "rgb24",
+            "rgba"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "vc2",
+        "long_name": "SMPTE VC-2",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuv420p10le",
+            "yuv420p12le",
+            "yuv422p",
+            "yuv422p10le",
+            "yuv422p12le",
+            "yuv444p",
+            "yuv444p10le",
+            "yuv444p12le"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "vnull",
+        "long_name": "null video",
+        "type": "video",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "vorbis",
+        "long_name": "Vorbis",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "vp8",
+        "long_name": "libvpx VP8",
+        "type": "video",
+        "video_formats": [
+            "yuv420p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "vp9",
+        "long_name": "libvpx VP9",
+        "type": "video",
+        "video_formats": [
+            "gbrp",
+            "yuv420p",
+            "yuv422p",
+            "yuv440p",
+            "yuv444p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "wavpack",
+        "long_name": "WavPack",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp",
+            "s16p",
+            "s32p",
+            "u8p"
+        ]
+    },
+    {
+        "name": "wbmp",
+        "long_name": "WBMP (Wireless Application Protocol Bitmap) image",
+        "type": "video",
+        "video_formats": [
+            "monob"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "webp",
+        "long_name": "libwebp WebP image",
+        "type": "video",
+        "video_formats": [
+            "bgra",
+            "yuv420p",
+            "yuva420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "webvtt",
+        "long_name": "WebVTT subtitle",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "wmav1",
+        "long_name": "Windows Media Audio 1",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "wmav2",
+        "long_name": "Windows Media Audio 2",
+        "type": "audio",
+        "video_formats": [],
+        "audio_formats": [
+            "fltp"
+        ]
+    },
+    {
+        "name": "wmv1",
+        "long_name": "Windows Media Video 7",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "wmv2",
+        "long_name": "Windows Media Video 8",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "wrapped_avframe",
+        "long_name": "AVFrame to AVPacket passthrough",
+        "type": "video",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "xbm",
+        "long_name": "XBM (X BitMap) image",
+        "type": "video",
+        "video_formats": [
+            "monow"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "xface",
+        "long_name": "X-face image",
+        "type": "video",
+        "video_formats": [
+            "monow"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "xsub",
+        "long_name": "DivX subtitles (XSUB)",
+        "type": "subtitle",
+        "video_formats": [],
+        "audio_formats": []
+    },
+    {
+        "name": "xwd",
+        "long_name": "XWD (X Window Dump) image",
+        "type": "video",
+        "video_formats": [
+            "abgr",
+            "argb",
+            "bgr24",
+            "bgr4_byte",
+            "bgr555be",
+            "bgr555le",
+            "bgr565be",
+            "bgr565le",
+            "bgr8",
+            "bgra",
+            "gray",
+            "monow",
+            "pal8",
+            "rgb24",
+            "rgb4_byte",
+            "rgb555be",
+            "rgb555le",
+            "rgb565be",
+            "rgb565le",
+            "rgb8",
+            "rgba"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "y41p",
+        "long_name": "Uncompressed YUV 4:1:1 12-bit",
+        "type": "video",
+        "video_formats": [
+            "yuv411p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "yuv4",
+        "long_name": "Uncompressed packed 4:2:0",
+        "type": "video",
+        "video_formats": [
+            "yuv420p"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "zlib",
+        "long_name": "LCL (LossLess Codec Library) ZLIB",
+        "type": "video",
+        "video_formats": [
+            "bgr24"
+        ],
+        "audio_formats": []
+    },
+    {
+        "name": "zmbv",
+        "long_name": "Zip Motion Blocks Video",
+        "type": "video",
+        "video_formats": [
+            "bgr0",
+            "pal8",
+            "rgb555le",
+            "rgb565le"
+        ],
+        "audio_formats": []
+    }
+]
