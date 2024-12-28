@@ -1,18 +1,26 @@
 import av
-import io
+# import io
 import json
 import re
 import csv
+import os
 import sys
-from io import StringIO
 import subprocess
+
+# from io import StringIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+if getattr(sys, 'frozen', False):
+    RUNPATH = os.path.dirname(sys.executable)
+else:
+    RUNPATH = os.path.abspath(os.path.dirname(__file__))
 
 class CompatibilityMatrix:
 
     def __init__(self):
         self.formats = sorted(av.formats_available)
         self.codecs = sorted(av.codecs_available)
+        self.matrix_file = os.path.join(RUNPATH, "compatibility_matrix.json")
         self.codec_list_video = self.buildCodecList("video")
         self.codec_list_audio = self.buildCodecList("audio")
 
@@ -140,8 +148,6 @@ class CompatibilityMatrix:
     def testEncode(self, container_format, codec_name, type):
         devnull = "NUL" if sys.platform.startswith("win") else "/dev/null"
 
-        # timeout_seconds = 10
-
         command_video = [
             "ffmpeg",
             "-hide_banner",
@@ -176,19 +182,16 @@ class CompatibilityMatrix:
                 command,
                 capture_output=True,
                 text=True,
-                # timeout=timeout_seconds
             )
-            # print(result.stderr)   # <-- Use `stderr` (not `sterr`)
             if any(msg in result.stderr for msg in [
                 "codec not currently supported in container",
                 "Unknown encoder",
                 "(incorrect codec parameters ?)"
                 "Unable to find a suitable codec"
             ]):
-                # print("CODEC NOT SUPPORTED")
                 return False
             return (result.returncode == 0)
-        #
+
         except subprocess.TimeoutExpired:
             return False
         except Exception:
@@ -205,7 +208,9 @@ class CompatibilityMatrix:
 
         with ThreadPoolExecutor(max_workers=100) as executor:
             future_to_codec = {
-                executor.submit(self.testEncode, format_name, codec_name, type): codec_name
+                executor.submit(
+                    self.testEncode, format_name, codec_name, type
+                ): codec_name
                 for codec_name in codec_list
             }
 
@@ -223,8 +228,9 @@ class CompatibilityMatrix:
 
     def buildCompatibilityMatrix(self):
         compatibility_matrix = self.buildMatrix()
-        pretty_settings = json.dumps(compatibility_matrix, indent=4)
-        print(pretty_settings)
+        formatted_matrix = json.dumps(compatibility_matrix, indent=4)
+        with open(self.matrix_file, "w") as f:
+            f.write(formatted_matrix)
 
 if __name__ == "__main__":
 
