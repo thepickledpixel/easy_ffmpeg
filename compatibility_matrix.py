@@ -5,9 +5,27 @@ import csv
 import os
 import sys
 import subprocess
+import curses
+import argparse
+import textwrap
 
+from textwrap import fill
+from tabulate import tabulate
 from typing import Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+################################################################################
+# Easy FFMPEG - Compatibility Matrix - E. Spencer 2024                         #
+# The following script is designed to build a compatibility matrix between     #
+# encoders and codecs with ffmpeg. Such a matrix is not available from the     #
+# ffmpeg CLI or API. When you normally submit a CLI job to ffmpeg, a           #
+# function dynamically calculates which codec is suitable (if you do not       #
+# specify one.)                                                                #
+#                                                                              #
+# Using the matrix, we can display a list of encoders, muxers, valid           #
+# file extensions and audio/video codecs which can be selected within a GUI    #
+# to submit a transcoding task.                                                #
+################################################################################
 
 # Set a global RUNPATH variable
 if getattr(sys, 'frozen', False):
@@ -16,7 +34,6 @@ else:
     RUNPATH = os.path.abspath(os.path.dirname(__file__))
 
 class CompatibilityMatrix:
-
     def __init__(self):
         self.encoders = sorted(av.formats_available)
         self.output_encoders = self.getOutputEncodersList()
@@ -25,6 +42,20 @@ class CompatibilityMatrix:
         self.codec_list_video = self.buildCodecList("video", mode='w')
         self.codec_list_audio = self.buildCodecList("audio", mode='w')
         self.no_workers = 200
+        self.codec_matrix = self.loadCodecMatrix()
+
+    def loadCodecMatrix(self):
+        """
+        Load a previously built codec/encoder matrix from disk
+        """
+        codec_matrix = None
+        if not os.path.exists(self.matrix_file):
+            print("Codec compatibility matrix not found, use --build-matrix")
+            return None
+
+        with open(self.matrix_file, "r") as json_file:
+            codec_matrix = json.load(json_file)
+        return codec_matrix
 
     def buildCodecList(self, type, mode='w') -> list:
         """
@@ -50,8 +81,9 @@ class CompatibilityMatrix:
             command,
             capture_output=True,
             text=True,
-            check=True,
+            # check=True,
         )
+        # print(result.stderr)
         return result
 
     def getMuxers(self) -> list:
@@ -92,9 +124,10 @@ class CompatibilityMatrix:
         try:
             return av.format.ContainerFormat(encoder_name, mode=mode)
         except Exception as e:
-            # Many of the encoders listed are not available and will error,
-            # ignore these
             return None
+
+    def getEncoderLongName(self, enc) -> str:
+        return enc.long_name
 
     def getEncoderFileExtensions(self, enc) -> list:
         """
@@ -162,7 +195,7 @@ class CompatibilityMatrix:
         return output_formats
 
     def buildEncoderMatrix(self) -> dict:
-        compatibility_matrix = []
+        compatibility_matrix = {}
         item = 0
 
         for encoder_name in self.output_encoders:
@@ -191,56 +224,45 @@ class CompatibilityMatrix:
                 }
             }
 
-            compatibility_matrix.append(data)
+            compatibility_matrix.update(data)
 
         return compatibility_matrix
 
     def testEncode(self, encoder_format, codec_name, type) -> bool:
         devnull = "NUL" if sys.platform.startswith("win") else "/dev/null"
 
-        command_video = [
-            "ffmpeg",
-            "-hide_banner",
-            "-y",
-            "-f", "lavfi",
-            "-i", "color=c=black:s=64x64:r=25",
-            "-frames:v", "1",
-            "-c:v", codec_name,
-            "-pix_fmt", "yuv420p",
-            "-f", encoder_format,
-            devnull
-        ]
+        common_options = ["ffmpeg", "-hide_banner", "-y", "-f", "lavfi"]
+        media_specific_options = {
+            "video": [
+                "-i", "color=c=black:s=64x64:r=25",
+                "-frames:v", "1",
+                "-c:v", codec_name,
+                "-pix_fmt", "yuv420p"
+            ],
+            "audio": [
+                "-i", "sine=frequency=1000:duration=1:sample_rate=44100",
+                "-c:a", codec_name
+            ]
+        }
 
-        command_audio = [
-            "ffmpeg",
-            "-hide_banner",
-            "-y",
-            "-f", "lavfi",
-            "-i", "sine=frequency=1000:duration=1:sample_rate=44100",
-            "-c:a", codec_name,
-            "-f", encoder_format,
-            devnull
-        ]
-
-        if type == "video":
-            command = command_video
-        else:
-            command = command_audio
+        command = common_options + media_specific_options[type] + ["-f", encoder_format, devnull]
 
         try:
-            result = subprocess.run(
-                command,
-                capture_output=True,
-                text=True,
-            )
+            result = self.ffmpegOutput(command)
+            # result = subprocess.run(
+            #     command,
+            #     capture_output=True,
+            #     text=True,
+            # )
             if any(msg in result.stderr for msg in [
                 "codec not currently supported in container"
             ]):
                 return False
             return (result.returncode == 0)
 
-        except Exception:
-            print("Unknown reason for incompatibility - investigate")
+        except Exception as e:
+            # print("Unknown reason for incompatibility - investigate")
+            print(e)
             # print(result.stderr)
             return False
 
@@ -272,11 +294,17 @@ class CompatibilityMatrix:
         print(f"\t{type} codecs: {len(compatible_codecs)}")
         return compatible_codecs
 
-    def getCodec(self):
+    def getCodec(self, codec_name):
         try:
             return av.codec.Codec(codec_name, mode='w')
         except:
             return None
+
+    def getCodecLongName(self, cdc):
+        return cdc.long_name
+
+    def getCodecType(self, cdc):
+        return cdc.type
 
     def getCodecVideoFormats(self, cdc) -> list:
         if cdc and hasattr(cdc, 'video_formats') and cdc.video_formats:
@@ -300,30 +328,140 @@ class CompatibilityMatrix:
         with open(self.matrix_file, "w") as f:
             f.write(formatted_matrix)
 
-    def iterateAllEncoders(self):
-        if not os.path.exists(self.matrix_file):
-            print("Codec compatibility matrix not found, please build")
+    def wrapText(self, items, width=20):
+        """
+        Wrap a list or string into multiple lines.
+        """
+        if isinstance(items, list):
+            # Join the items with commas and wrap the resulting string
+            return "\n".join(textwrap.wrap(", ".join(items), width=width))
+        elif isinstance(items, str):
+            return "\n".join(textwrap.wrap(items, width=width))
+        return items
+
+    def getEncoderAttributes(self, encoder_name):
+        encoder = self.getEncoder(encoder_name)
+        if not encoder:
+            return None
+
+        data = {
+            "long_name": self.getEncoderLongName(encoder),
+            "muxers": self.getEncoderMuxers(encoder),
+            "options": self.getEncoderOptions(encoder),
+            "file_extensions": self.getEncoderFileExtensions(encoder),
+            "video_codecs": self.codec_matrix[encoder_name]['codecs']['video'],
+            "audio_codecs": self.codec_matrix[encoder_name]['codecs']['audio']
+        }
+        return data
+
+    def getCodecAttributes(self, codec_name):
+        codec = self.getCodec(codec_name)
+        if not codec:
+            return None
+
+        data = {
+            "long_name": self.getCodecLongName(codec),
+            "type": self.getCodecType(codec),
+            "video_formats": self.getCodecVideoFormats(codec),
+            "audio_formats": self.getCodecAudioFormats(codec)
+        }
+        return data
+
+    def displayEncoderAttributes(self, encoder_list):
+        """
+        Display Encoder attributes
+        """
+        if not self.codec_matrix:
             return
 
-        with open(self.matrix_file, "r") as json_file:
-            codec_matrix = json.load(json_file)
+        table_data = []
+        headers = [
+            "Encoder Name", "Long Name", "Muxers", "Options",
+            "File Extensions", "Video Codecs", "Audio Codecs"
+        ]
 
-        for encoder_name in self.output_encoders:
-            encoder = self.getEncoder(encoder_name)
-            muxers = self.getEncoderMuxers(encoder)
-            # print(muxers)
-            options = self.getEncoderOptions(encoder)
-            # print(options)
-            file_extensions = self.getEncoderFileExtensions(encoder)
-            # print(file_extensions)
-            video_codecs = codec_matrix[encoder_name]['codecs']['video']
-            print(video_codecs)
-            audio_codecs = codec_matrix[encoder_name]['codecs']['audio']
-            print(audio_codecs)
+        for encoder_name in encoder_list:
+            enc_attributes = self.getEncoderAttributes(encoder_name)
+            if enc_attributes:
+                table_data.append([
+                    encoder_name,
+                    self.wrapText(enc_attributes['long_name']),
+                    self.wrapText(enc_attributes['muxers']),
+                    self.wrapText(enc_attributes['options']),
+                    self.wrapText(enc_attributes['file_extensions']),
+                    self.wrapText(enc_attributes['video_codecs']),
+                    self.wrapText(enc_attributes['audio_codecs']),
+                ])
+            else:
+                print(f"Could not find attributes for: {encoder_name}")
 
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+
+    def displayCodecAttributes(self, codec_list):
+        """
+        Display codec attributes
+        """
+        table_data = []
+        headers = [
+            "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
+        ]
+
+        for codec_name in codec_list:
+            cdc_attributes = self.getCodecAttributes(codec_name)
+            if cdc_attributes:
+                table_data.append([
+                    codec_name,
+                    self.wrapText(cdc_attributes['long_name']),
+                    self.wrapText(cdc_attributes['type']),
+                    self.wrapText(cdc_attributes['video_formats']),
+                    self.wrapText(cdc_attributes['audio_formats']),
+                ])
+            else:
+                print(f"Could not find attributes for: {codec_name}")
+
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+
+    def configureCliArguments(self):
+        """
+        Parse command line arguments
+        """
+        parser = argparse.ArgumentParser(
+            description=f"Easy FFMpeg Encoder Compatibility Matrix"
+        )
+        parser.add_argument(
+            '--encoder', metavar='<Encoder>', help="Display Encoder details"
+        )
+        parser.add_argument(
+            '--codec', metavar='<Codec>', help="Display Codec details"
+        )
+        parser.add_argument(
+            '--all', action='store_true',
+            help='Display details for all Encoders'
+        )
+        parser.add_argument(
+            '--build-matrix', action='store_true',
+            help='Build compatibility matrix'
+        )
+        return parser.parse_args()
 
 if __name__ == "__main__":
-
     compatibility_matrix = CompatibilityMatrix()
-    compatibility_matrix.buildCompatibilityMatrix()
-    compatibility_matrix.iterateAllEncoders()
+    args = compatibility_matrix.configureCliArguments()
+
+    if args.build_matrix:
+        compatibility_matrix.buildCompatibilityMatrix()
+
+    if args.encoder:
+        compatibility_matrix.displayEncoderAttributes(
+            [args.encoder]
+        )
+
+    if args.codec:
+        compatibility_matrix.displayCodecAttributes(
+            [args.codec]
+        )
+
+    if args.all:
+        compatibility_matrix.displayEncoderAttributes(
+            compatibility_matrix.output_encoders
+        )
