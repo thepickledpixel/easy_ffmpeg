@@ -41,33 +41,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [
             "h264",
             "h264_videotoolbox",
@@ -122,33 +95,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [
             "h264",
             "h264_videotoolbox",
@@ -171,7 +117,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5"
@@ -187,7 +132,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "ac3",
@@ -206,9 +150,6 @@
         "muxer": "AC4 muxer",
         "available_muxers": [
             "ac4"
-        ],
-        "muxer_options": [
-            "write_crc"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
@@ -229,11 +170,6 @@
         "available_muxers": [
             "adts"
         ],
-        "muxer_options": [
-            "write_apetag",
-            "write_id3v2",
-            "write_mpeg2"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "aac",
@@ -249,7 +185,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_adx"
@@ -264,7 +199,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -284,10 +218,6 @@
         "muxer": "AIFF muxer",
         "available_muxers": [
             "aiff"
-        ],
-        "muxer_options": [
-            "id3v2_version",
-            "write_id3v2"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -316,7 +246,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_alaw",
@@ -337,9 +266,6 @@
         "available_muxers": [
             "alp"
         ],
-        "muxer_options": [
-            "type"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -352,7 +278,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -365,7 +290,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -378,7 +302,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_ima_apm"
@@ -398,10 +321,6 @@
         "available_muxers": [
             "apng"
         ],
-        "muxer_options": [
-            "final_delay",
-            "plays"
-        ],
         "compatible_video_codecs": [
             "apng"
         ],
@@ -416,7 +335,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "aptx"
@@ -431,7 +349,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "aptx_hd"
@@ -448,11 +365,6 @@
         "extensions": [],
         "muxer": "argo_asf_muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "name",
-            "version_major",
-            "version_minor"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_argo"
@@ -471,11 +383,6 @@
         ],
         "muxer": "argo_cvg_muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "loop",
-            "reverb",
-            "skip_rate_check"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -493,9 +400,6 @@
         "muxer": "ASF (stream) muxer",
         "available_muxers": [
             "asf"
-        ],
-        "muxer_options": [
-            "packet_size"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -612,9 +516,6 @@
         "available_muxers": [
             "asf"
         ],
-        "muxer_options": [
-            "packet_size"
-        ],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -729,9 +630,6 @@
         "available_muxers": [
             "ass"
         ],
-        "muxer_options": [
-            "ignore_readorder"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -749,10 +647,6 @@
         "available_muxers": [
             "ast"
         ],
-        "muxer_options": [
-            "loopend",
-            "loopstart"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s16be_planar"
@@ -767,7 +661,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "g722",
@@ -794,10 +687,6 @@
         "muxer": "AudioToolbox",
         "available_muxers": [
             "audiotoolbox"
-        ],
-        "muxer_options": [
-            "audio_device_index",
-            "list_devices"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -827,11 +716,6 @@
         "muxer": "AVI muxer",
         "available_muxers": [
             "avi"
-        ],
-        "muxer_options": [
-            "flipped_raw_rgb",
-            "reserve_index_space",
-            "write_channel_mask"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -985,10 +869,6 @@
         "available_muxers": [
             "avif"
         ],
-        "muxer_options": [
-            "loop",
-            "movie_timescale"
-        ],
         "compatible_video_codecs": [
             "av1",
             "libaom-av1"
@@ -1002,7 +882,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "flashsv",
             "flv",
@@ -1024,7 +903,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1037,7 +915,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1050,7 +927,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1063,7 +939,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "ac3",
@@ -1106,7 +981,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1119,7 +993,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1130,7 +1003,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1141,7 +1013,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -1369,44 +1240,6 @@
         "available_muxers": [
             "dash"
         ],
-        "muxer_options": [
-            "adaptation_sets",
-            "dash_segment_type",
-            "extra_window_size",
-            "format_options",
-            "frag_duration",
-            "frag_type",
-            "global_sidx",
-            "hls_master_name",
-            "hls_playlist",
-            "http_opts",
-            "http_persistent",
-            "http_user_agent",
-            "ignore_io_errors",
-            "index_correction",
-            "init_seg_name",
-            "ldash",
-            "lhls",
-            "master_m3u8_publish_rate",
-            "max_playback_rate",
-            "media_seg_name",
-            "method",
-            "min_playback_rate",
-            "mpd_profile",
-            "remove_at_exit",
-            "seg_duration",
-            "single_file",
-            "single_file_name",
-            "streaming",
-            "target_latency",
-            "timeout",
-            "update_period",
-            "use_template",
-            "use_timeline",
-            "utc_timing_url",
-            "window_size",
-            "write_prft"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1417,7 +1250,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1430,7 +1262,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1443,7 +1274,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "dfpwm"
@@ -1459,7 +1289,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "dirac",
             "vc2"
@@ -1476,7 +1305,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1489,7 +1317,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1502,7 +1329,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1522,10 +1348,6 @@
             "mpeg",
             "svcd",
             "vob"
-        ],
-        "muxer_options": [
-            "muxrate",
-            "preload"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -1651,7 +1473,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "eac3"
@@ -1666,7 +1487,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -1677,7 +1497,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_f32be"
@@ -1690,7 +1509,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_f32le"
@@ -1738,33 +1556,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [
             "h264",
             "h264_videotoolbox",
@@ -1785,7 +1576,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_f64be"
@@ -1798,7 +1588,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_f64le"
@@ -1813,7 +1602,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -2039,19 +1827,6 @@
         "available_muxers": [
             "fifo"
         ],
-        "muxer_options": [
-            "attempt_recovery",
-            "drop_pkts_on_overflow",
-            "fifo_format",
-            "format_opts",
-            "max_recovery_attempts",
-            "queue_size",
-            "recover_any_error",
-            "recovery_wait_streamtime",
-            "recovery_wait_time",
-            "restart_with_keyframe",
-            "timeshift"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2064,7 +1839,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "cinepak"
         ],
@@ -2079,7 +1853,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2092,7 +1865,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "fits"
         ],
@@ -2111,9 +1883,6 @@
         "available_muxers": [
             "flac"
         ],
-        "muxer_options": [
-            "write_header"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "flac"
@@ -2131,9 +1900,6 @@
         "muxer": "flv muxer",
         "available_muxers": [
             "flv"
-        ],
-        "muxer_options": [
-            "flvflags"
         ],
         "compatible_video_codecs": [
             "av1",
@@ -2173,7 +1939,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -2363,10 +2128,6 @@
         "extensions": [],
         "muxer": "frame hash muxer",
         "available_muxers": [
-            "hash"
-        ],
-        "muxer_options": [
-            "format_version",
             "hash"
         ],
         "compatible_video_codecs": [
@@ -2560,10 +2321,6 @@
         "available_muxers": [
             "md5"
         ],
-        "muxer_options": [
-            "format_version",
-            "hash"
-        ],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -2752,7 +2509,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "g722"
@@ -2768,7 +2524,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2779,7 +2534,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2790,7 +2544,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2808,10 +2561,6 @@
         "available_muxers": [
             "gif"
         ],
-        "muxer_options": [
-            "final_delay",
-            "loop"
-        ],
         "compatible_video_codecs": [
             "gif"
         ],
@@ -2826,7 +2575,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2839,7 +2587,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2852,7 +2599,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2865,7 +2611,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -2879,7 +2624,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "h264",
             "h264_videotoolbox",
@@ -2897,9 +2641,6 @@
         "extensions": [],
         "muxer": "(stream) hash muxer",
         "available_muxers": [
-            "hash"
-        ],
-        "muxer_options": [
             "hash"
         ],
         "compatible_video_codecs": [
@@ -3095,12 +2836,6 @@
         "available_muxers": [
             "hds"
         ],
-        "muxer_options": [
-            "extra_window_size",
-            "min_frag_duration",
-            "remove_at_exit",
-            "window_size"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -3115,7 +2850,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "hevc",
             "libx265"
@@ -3168,43 +2902,6 @@
         "muxer": "hls muxer",
         "available_muxers": [
             "hls"
-        ],
-        "muxer_options": [
-            "cc_stream_map",
-            "headers",
-            "hls_allow_cache",
-            "hls_base_url",
-            "hls_delete_threshold",
-            "hls_enc",
-            "hls_enc_iv",
-            "hls_enc_key",
-            "hls_enc_key_url",
-            "hls_flags",
-            "hls_fmp4_init_filename",
-            "hls_fmp4_init_resend",
-            "hls_init_time",
-            "hls_key_info_file",
-            "hls_list_size",
-            "hls_playlist_type",
-            "hls_segment_filename",
-            "hls_segment_options",
-            "hls_segment_size",
-            "hls_segment_type",
-            "hls_start_number_source",
-            "hls_subtitle_path",
-            "hls_time",
-            "hls_vtt_options",
-            "http_persistent",
-            "http_user_agent",
-            "ignore_io_errors",
-            "master_pl_name",
-            "master_pl_publish_rate",
-            "method",
-            "start_number",
-            "strftime",
-            "strftime_mkdir",
-            "timeout",
-            "var_stream_map"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -3394,7 +3091,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -3407,7 +3103,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "bmp"
         ],
@@ -3422,7 +3117,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -3483,14 +3177,6 @@
         "muxer": "image2 muxer",
         "available_muxers": [
             "image2"
-        ],
-        "muxer_options": [
-            "atomic_writing",
-            "frame_pts",
-            "protocol_opts",
-            "start_number",
-            "strftime",
-            "update"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -3603,7 +3289,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -3752,33 +3437,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [
             "h264",
             "h264_videotoolbox",
@@ -3805,7 +3463,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_alaw",
@@ -3863,33 +3520,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [
             "dirac",
             "h264",
@@ -3938,7 +3568,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "av1",
             "libaom-av1",
@@ -3959,7 +3588,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -3972,7 +3600,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_ima_ssi"
@@ -3992,9 +3619,6 @@
         "available_muxers": [
             "latm"
         ],
-        "muxer_options": [
-            "smc-interval"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "aac",
@@ -4010,7 +3634,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -4023,7 +3646,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -4036,7 +3658,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "mpeg4"
         ],
@@ -4065,19 +3686,6 @@
         "available_muxers": [
             "matroska",
             "webm"
-        ],
-        "muxer_options": [
-            "allow_raw_vfw",
-            "cluster_size_limit",
-            "cluster_time_limit",
-            "cues_to_front",
-            "dash",
-            "dash_track_number",
-            "default_mode",
-            "flipped_raw_rgb",
-            "live",
-            "reserve_index_space",
-            "write_crc32"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -4208,9 +3816,6 @@
         "muxer": "MD5 muxer",
         "available_muxers": [
             "md5"
-        ],
-        "muxer_options": [
-            "hash"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -4400,7 +4005,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -4414,7 +4018,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "mjpeg"
         ],
@@ -4427,7 +4030,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -4541,7 +4143,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -4554,7 +4155,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_yamaha"
@@ -4601,33 +4201,6 @@
             "mov",
             "mp4",
             "psp"
-        ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -4753,7 +4326,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "libtwolame",
@@ -4775,11 +4347,6 @@
         "muxer": "MP3 muxer",
         "available_muxers": [
             "mp3"
-        ],
-        "muxer_options": [
-            "id3v2_version",
-            "write_id3v1",
-            "write_xing"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -4828,33 +4395,6 @@
             "mov",
             "mp4",
             "psp"
-        ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
         ],
         "compatible_video_codecs": [
             "av1",
@@ -4921,10 +4461,6 @@
             "mpeg",
             "svcd",
             "vob"
-        ],
-        "muxer_options": [
-            "muxrate",
-            "preload"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -5051,7 +4587,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "mpeg1video"
         ],
@@ -5066,7 +4601,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "mpeg2video"
         ],
@@ -5103,25 +4637,6 @@
         "muxer": "MPEGTS muxer",
         "available_muxers": [
             "mpegts"
-        ],
-        "muxer_options": [
-            "mpegts_copyts",
-            "mpegts_flags",
-            "mpegts_m2ts_mode",
-            "mpegts_original_network_id",
-            "mpegts_pmt_start_pid",
-            "mpegts_service_id",
-            "mpegts_service_type",
-            "mpegts_start_pid",
-            "mpegts_transport_stream_id",
-            "muxrate",
-            "nit_period",
-            "omit_video_pes_length",
-            "pat_period",
-            "pcr_period",
-            "pes_payload_size",
-            "sdt_period",
-            "tables_version"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -5313,9 +4828,6 @@
         ],
         "muxer": "mpjpeg_muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "boundary_tag"
-        ],
         "compatible_video_codecs": [
             "mjpeg"
         ],
@@ -5330,7 +4842,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_mulaw",
@@ -5350,10 +4861,6 @@
         "muxer": "MXF muxer",
         "available_muxers": [
             "mxf"
-        ],
-        "muxer_options": [
-            "signal_standard",
-            "store_user_comments"
         ],
         "compatible_video_codecs": [
             "ffv1",
@@ -5380,11 +4887,6 @@
         "extensions": [],
         "muxer": "MXF-D10 muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "d10_channelcount",
-            "signal_standard",
-            "store_user_comments"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -5401,11 +4903,6 @@
         ],
         "muxer": "MXF-OPAtom muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "mxf_audio_edit_rate",
-            "signal_standard",
-            "store_user_comments"
-        ],
         "compatible_video_codecs": [
             "ffv1",
             "h264",
@@ -5427,7 +4924,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -5619,10 +5115,6 @@
         ],
         "muxer": "nutenc",
         "available_muxers": [],
-        "muxer_options": [
-            "syncpoints",
-            "write_index"
-        ],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -5756,7 +5248,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "av1",
             "libaom-av1"
@@ -5779,12 +5270,6 @@
         "available_muxers": [
             "ogg",
             "opus"
-        ],
-        "muxer_options": [
-            "oggpagesize",
-            "page_duration",
-            "pagesize",
-            "serial_offset"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -5811,12 +5296,6 @@
         "available_muxers": [
             "ogg",
             "opus"
-        ],
-        "muxer_options": [
-            "oggpagesize",
-            "page_duration",
-            "pagesize",
-            "serial_offset"
         ],
         "compatible_video_codecs": [
             "libvpx",
@@ -5847,12 +5326,6 @@
             "ogg",
             "opus"
         ],
-        "muxer_options": [
-            "oggpagesize",
-            "page_duration",
-            "pagesize",
-            "serial_offset"
-        ],
         "compatible_video_codecs": [
             "libvpx",
             "vp8"
@@ -5874,7 +5347,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -5894,12 +5366,6 @@
         "available_muxers": [
             "ogg",
             "opus"
-        ],
-        "muxer_options": [
-            "oggpagesize",
-            "page_duration",
-            "pagesize",
-            "serial_offset"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -5953,33 +5419,6 @@
             "mp4",
             "psp"
         ],
-        "muxer_options": [
-            "brand",
-            "empty_hdlr_name",
-            "encryption_key",
-            "encryption_kid",
-            "encryption_scheme",
-            "frag_duration",
-            "frag_interleave",
-            "frag_size",
-            "fragment_index",
-            "iods_audio_profile",
-            "iods_video_profile",
-            "ism_lookahead",
-            "min_frag_duration",
-            "moov_size",
-            "mov_gamma",
-            "movflags",
-            "movie_timescale",
-            "rtpflags",
-            "skip_iods",
-            "use_editlist",
-            "use_stream_ids_as_track_ids",
-            "video_track_timescale",
-            "write_btrt",
-            "write_prft",
-            "write_tmcd"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -5993,7 +5432,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -6105,7 +5543,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6119,7 +5556,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "a64multi",
             "a64multi5",
@@ -6237,7 +5673,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "roqvideo"
         ],
@@ -6252,7 +5687,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u8"
@@ -6272,13 +5706,6 @@
         "muxer": "RTP muxer",
         "available_muxers": [
             "rtp"
-        ],
-        "muxer_options": [
-            "cname",
-            "payload_type",
-            "rtpflags",
-            "seq",
-            "ssrc"
         ],
         "compatible_video_codecs": [
             "bitpacked",
@@ -6334,10 +5761,6 @@
         "muxer": "rtp_mpegts muxer",
         "available_muxers": [
             "rtp_mpegts"
-        ],
-        "muxer_options": [
-            "mpegts_muxer_options",
-            "rtp_muxer_options"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -6541,21 +5964,6 @@
         "available_muxers": [
             "rtsp"
         ],
-        "muxer_options": [
-            "allowed_media_types",
-            "buffer_size",
-            "initial_pause",
-            "listen_timeout",
-            "max_port",
-            "min_port",
-            "pkt_size",
-            "reorder_queue_size",
-            "rtpflags",
-            "rtsp_flags",
-            "rtsp_transport",
-            "timeout",
-            "user_agent"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6566,7 +5974,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s16be"
@@ -6581,7 +5988,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s16le"
@@ -6594,7 +6000,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s24be"
@@ -6607,7 +6012,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s24le"
@@ -6620,7 +6024,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s32be"
@@ -6633,7 +6036,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s32le"
@@ -6648,7 +6050,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s8"
@@ -6661,7 +6062,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6675,7 +6075,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "sbc"
@@ -6690,7 +6089,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6732,36 +6130,6 @@
         "available_muxers": [
             "segment"
         ],
-        "muxer_options": [
-            "break_non_keyframes",
-            "increment_tc",
-            "individual_header_trailer",
-            "initial_offset",
-            "min_seg_duration",
-            "reference_stream",
-            "reset_timestamps",
-            "segment_atclocktime",
-            "segment_clocktime_offset",
-            "segment_clocktime_wrap_duration",
-            "segment_format",
-            "segment_format_options",
-            "segment_frames",
-            "segment_header_filename",
-            "segment_list",
-            "segment_list_entry_prefix",
-            "segment_list_flags",
-            "segment_list_size",
-            "segment_list_type",
-            "segment_start_number",
-            "segment_time",
-            "segment_time_delta",
-            "segment_times",
-            "segment_wrap",
-            "segment_wrap_number",
-            "strftime",
-            "write_empty_segments",
-            "write_header_trailer"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6772,7 +6140,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "mjpeg"
         ],
@@ -6793,13 +6160,6 @@
         "extensions": [],
         "muxer": "smooth streaming muxer",
         "available_muxers": [],
-        "muxer_options": [
-            "extra_window_size",
-            "lookahead_count",
-            "min_frag_duration",
-            "remove_at_exit",
-            "window_size"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6812,7 +6172,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_s32be",
@@ -6833,11 +6192,6 @@
         "muxer": "spdif",
         "available_muxers": [
             "spdif"
-        ],
-        "muxer_options": [
-            "dtshd_fallback_time",
-            "dtshd_rate",
-            "spdif_flags"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -6868,12 +6222,6 @@
             "ogg",
             "opus"
         ],
-        "muxer_options": [
-            "oggpagesize",
-            "page_duration",
-            "pagesize",
-            "serial_offset"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "flac",
@@ -6892,7 +6240,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6934,36 +6281,6 @@
         "available_muxers": [
             "segment"
         ],
-        "muxer_options": [
-            "break_non_keyframes",
-            "increment_tc",
-            "individual_header_trailer",
-            "initial_offset",
-            "min_seg_duration",
-            "reference_stream",
-            "reset_timestamps",
-            "segment_atclocktime",
-            "segment_clocktime_offset",
-            "segment_clocktime_wrap_duration",
-            "segment_format",
-            "segment_format_options",
-            "segment_frames",
-            "segment_header_filename",
-            "segment_list",
-            "segment_list_entry_prefix",
-            "segment_list_flags",
-            "segment_list_size",
-            "segment_list_type",
-            "segment_start_number",
-            "segment_time",
-            "segment_time_delta",
-            "segment_times",
-            "segment_wrap",
-            "segment_wrap_number",
-            "strftime",
-            "write_empty_segments",
-            "write_header_trailer"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -6976,9 +6293,6 @@
         "extensions": [],
         "muxer": "(stream) hash muxer",
         "available_muxers": [
-            "hash"
-        ],
-        "muxer_options": [
             "hash"
         ],
         "compatible_video_codecs": [
@@ -7169,7 +6483,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7189,10 +6502,6 @@
             "mpeg",
             "svcd",
             "vob"
-        ],
-        "muxer_options": [
-            "muxrate",
-            "preload"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -7317,7 +6626,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "flashsv",
             "flv",
@@ -7341,10 +6649,6 @@
         "available_muxers": [
             "tee"
         ],
-        "muxer_options": [
-            "fifo_options",
-            "use_fifo"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7357,7 +6661,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7370,7 +6673,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "tta"
@@ -7385,7 +6687,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7396,7 +6697,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u16be"
@@ -7411,7 +6711,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u16le"
@@ -7424,7 +6723,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u24be"
@@ -7437,7 +6735,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u24le"
@@ -7450,7 +6747,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u32be"
@@ -7463,7 +6759,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u32le"
@@ -7478,7 +6773,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_u8"
@@ -7491,7 +6785,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "vnull"
         ],
@@ -7508,7 +6801,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7521,7 +6813,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7539,10 +6830,6 @@
             "mpeg",
             "svcd",
             "vob"
-        ],
-        "muxer_options": [
-            "muxrate",
-            "preload"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -7665,7 +6952,6 @@
         "extensions": [],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_vidc"
@@ -7687,10 +6973,6 @@
             "mpeg",
             "svcd",
             "vob"
-        ],
-        "muxer_options": [
-            "muxrate",
-            "preload"
         ],
         "compatible_video_codecs": [
             "a64multi",
@@ -7815,7 +7097,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "pcm_alaw",
@@ -7837,7 +7118,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -7850,7 +7130,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "aac",
@@ -7905,14 +7184,6 @@
         "muxer": "WAV muxer",
         "available_muxers": [
             "wav"
-        ],
-        "muxer_options": [
-            "peak_block_size",
-            "peak_format",
-            "peak_ppv",
-            "rf64",
-            "write_bext",
-            "write_peak"
         ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
@@ -7975,19 +7246,6 @@
             "matroska",
             "webm"
         ],
-        "muxer_options": [
-            "allow_raw_vfw",
-            "cluster_size_limit",
-            "cluster_time_limit",
-            "cues_to_front",
-            "dash",
-            "dash_track_number",
-            "default_mode",
-            "flipped_raw_rgb",
-            "live",
-            "reserve_index_space",
-            "write_crc32"
-        ],
         "compatible_video_codecs": [
             "av1",
             "libaom-av1",
@@ -8017,12 +7275,6 @@
         "available_muxers": [
             "webm"
         ],
-        "muxer_options": [
-            "audio_chunk_duration",
-            "chunk_start_index",
-            "header",
-            "method"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -8046,15 +7298,6 @@
             "dash",
             "webm"
         ],
-        "muxer_options": [
-            "adaptation_sets",
-            "chunk_duration_ms",
-            "chunk_start_index",
-            "live",
-            "minimum_update_period",
-            "time_shift_buffer_depth",
-            "utc_timing_url"
-        ],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -8070,9 +7313,6 @@
         "muxer": "WebP muxer",
         "available_muxers": [
             "webp"
-        ],
-        "muxer_options": [
-            "loop"
         ],
         "compatible_video_codecs": [
             "libwebp",
@@ -8090,7 +7330,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": []
     },
@@ -8103,7 +7342,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "adpcm_ima_ws"
@@ -8118,7 +7356,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "amv",
             "asv1",
@@ -8221,7 +7458,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [],
         "compatible_audio_codecs": [
             "wavpack"
@@ -8236,7 +7472,6 @@
         ],
         "muxer": "",
         "available_muxers": [],
-        "muxer_options": [],
         "compatible_video_codecs": [
             "rawvideo",
             "wrapped_avframe"

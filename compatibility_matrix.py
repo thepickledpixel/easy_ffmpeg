@@ -268,5 +268,5 @@ class CompatibilityMatrix:
 if __name__ == "__main__":
 
     compatibility_matrix = CompatibilityMatrix()
-    # compatibility_matrix.buildCompatibilityMatrix()
+    compatibility_matrix.buildCompatibilityMatrix()
     compatibility_matrix.buildCodecMatrix()
