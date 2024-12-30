@@ -458,10 +458,10 @@ class CompatibilityMatrix:
         can support the audio, video and file extension
         """
         print(
-            "Searching for:\n"
-            f"\tExtension:\t{extension}\n"
-            f"\tVideo Codec:\t{video_codec}\n"
-            f"\tAudio Codec:\t{audio_codec}"
+            "\nSearching for:\n"
+            f"\tExtension: {extension}\n"
+            f"\tVideo Codec: {video_codec}\n"
+            f"\tAudio Codec: {audio_codec}"
         )
 
         self.buildEncoderAttributesJson(
@@ -496,7 +496,7 @@ class CompatibilityMatrix:
 
         common_encoders = set.intersection(*sets_to_compare)
         common_encoders = list(common_encoders)
-        print("Common encoders:", common_encoders)
+        print(f"\nCommon encoder(s): {common_encoders}\n")
         return common_encoders
 
     def configureCliArguments(self):
