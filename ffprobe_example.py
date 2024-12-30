@@ -30,29 +30,29 @@ def get_codec_and_encoder(file_path):
         search_video_codec = None
 
         for stream in data['streams']:
-            search_extension = extension.replace('.', '')
+            search_extension = extension.replace('.', '').lower()
             data = {
-                "index": stream['index'],
+                "index": stream.get('index', None),
                 "extension": extension.replace('.', ''),
-                "codec_name": stream['codec_name'],
-                "codec_type": stream['codec_type']
+                "codec_name": stream.get('codec_name', None),
+                "codec_type": stream.get('codec_type', None)
             }
-            if stream['codec_type'] == "audio":
-                search_audio_codec = stream['codec_name']
+            if stream.get('codec_type') == "audio":
+                search_audio_codec = stream.get('codec_name', None)
                 data.update({
-                    "sample_rate": stream['sample_rate'],
-                    "channels": stream['channels'],
-                    "channel_layout": stream['channel_layout'],
-                    "bit_rate": stream['bit_rate']
+                    "sample_rate": stream.get('sample_rate', None),
+                    "channels": stream.get('channels', None),
+                    "channel_layout": stream.get('channel_layout', None),
+                    "bit_rate": stream.get('bit_rate', None)
                 })
-            if stream['codec_type'] == "video":
-                search_video_codec = stream['codec_name']
+            if stream.get('codec_type') == "video":
+                search_video_codec = stream.get('codec_name', None)
                 data.update({
-                    "width": stream['width'],
-                    "height": stream['height'],
-                    "pix_fmt": stream['pix_fmt'],
-                    "r_frame_rate": stream['r_frame_rate'],
-                    "bit_rate": stream['bit_rate']
+                    "width": stream.get('width', None),
+                    "height": stream.get('height', None),
+                    "pix_fmt": stream.get('pix_fmt', None),
+                    "r_frame_rate": stream.get('r_frame_rate', None),
+                    "bit_rate": stream.get('bit_rate', None)
                 })
 
             formatted_data = json.dumps(data, indent=4)

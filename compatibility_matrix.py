@@ -69,7 +69,7 @@ class CompatibilityMatrix:
             try:
                 cdc = av.codec.Codec(codec_name, mode=mode)
                 if cdc.type == type:
-                    codec_list.append(codec_name)
+                    codec_list.append(codec_name.lower())
             except Exception as e:
                 pass
         return codec_list
@@ -133,7 +133,9 @@ class CompatibilityMatrix:
         Returns a list of export file extensions which are compatible with the
         Encoder
         """
-        file_extensions = list(enc.extensions) if enc.extensions else []
+        # file_extensions = list(enc.extensions) if enc.extensions else []
+        # file_extensions.sort()
+        file_extensions = [ext.lower() for ext in enc.extensions] if enc.extensions else []
         file_extensions.sort()
         return file_extensions
 
@@ -172,7 +174,7 @@ class CompatibilityMatrix:
         for mux in muxers:
             for part in muxer_split:
                 if mux['name'].lower() == part:
-                    muxers_list.append(mux['name'])
+                    muxers_list.append(mux['name'].lower())
 
         muxers_list.sort()
         return muxers_list
@@ -189,7 +191,7 @@ class CompatibilityMatrix:
                 continue
             else:
                 if enc.is_output:
-                    output_formats.append(enc.name)
+                    output_formats.append(enc.name.lower())
 
         return output_formats
 
@@ -279,7 +281,7 @@ class CompatibilityMatrix:
                 try:
                     result = future.result()
                     if result:
-                        compatible_codecs.append(codec_name)
+                        compatible_codecs.append(codec_name.lower())
                 except Exception as e:
                     print(f"\tError testing codec {codec_name}: {e}")
 
@@ -472,17 +474,17 @@ class CompatibilityMatrix:
 
         if video_codec:
             for row_name, attributes in self.encoder_attributes_json.items():
-                if video_codec in attributes['attributes']['video_codecs']:
+                if video_codec.lower() in attributes['attributes']['video_codecs']:
                     video_encoders.append(row_name)
 
         if audio_codec:
             for row_name, attributes in self.encoder_attributes_json.items():
-                if audio_codec in attributes['attributes']['audio_codecs']:
+                if audio_codec.lower() in attributes['attributes']['audio_codecs']:
                     audio_encoders.append(row_name)
 
         if extension:
             for row_name, attributes in self.encoder_attributes_json.items():
-                if extension in attributes['attributes']['file_extensions']:
+                if extension.lower() in attributes['attributes']['file_extensions']:
                     extension_encoders.append(row_name)
 
         sets_to_compare = [set(lst) for lst in [
