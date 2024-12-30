@@ -43,6 +43,7 @@ class CompatibilityMatrix:
         self.codec_list_audio = self.buildCodecList("audio", mode='w')
         self.no_workers = 200
         self.codec_matrix = self.loadCodecMatrix()
+        self.encoder_attributes_json = {}
 
     def loadCodecMatrix(self):
         """
@@ -81,9 +82,7 @@ class CompatibilityMatrix:
             command,
             capture_output=True,
             text=True,
-            # check=True,
         )
-        # print(result.stderr)
         return result
 
     def getMuxers(self) -> list:
@@ -249,11 +248,6 @@ class CompatibilityMatrix:
 
         try:
             result = self.ffmpegOutput(command)
-            # result = subprocess.run(
-            #     command,
-            #     capture_output=True,
-            #     text=True,
-            # )
             if any(msg in result.stderr for msg in [
                 "codec not currently supported in container"
             ]):
@@ -261,9 +255,7 @@ class CompatibilityMatrix:
             return (result.returncode == 0)
 
         except Exception as e:
-            # print("Unknown reason for incompatibility - investigate")
             print(e)
-            # print(result.stderr)
             return False
 
     def getCompatibleCodecs(self, encoder_name, type)  -> list:
@@ -299,6 +291,9 @@ class CompatibilityMatrix:
             return av.codec.Codec(codec_name, mode='w')
         except:
             return None
+
+    def getCodecID(self, cdc):
+        return cdc.id
 
     def getCodecLongName(self, cdc):
         return cdc.long_name
@@ -360,12 +355,42 @@ class CompatibilityMatrix:
             return None
 
         data = {
+            "id": self.getCodecID(codec),
             "long_name": self.getCodecLongName(codec),
             "type": self.getCodecType(codec),
             "video_formats": self.getCodecVideoFormats(codec),
             "audio_formats": self.getCodecAudioFormats(codec)
         }
         return data
+
+    def buildEncoderAttributesJson(self, encoder_list, print_json=False):
+        if not self.codec_matrix:
+            return
+
+        self.encoder_attributes_json = {}
+
+        for encoder_name in encoder_list:
+            enc_attributes = self.getEncoderAttributes(encoder_name)
+            if enc_attributes:
+                data = {
+                    encoder_name: {
+                        "attributes": {
+                            "long_name": enc_attributes['long_name'],
+                            "muxers": enc_attributes['muxers'],
+                            "options": enc_attributes['options'],
+                            "file_extensions": enc_attributes['file_extensions'],
+                            "video_codecs": enc_attributes['video_codecs'],
+                            "audio_codecs": enc_attributes['audio_codecs']
+                        }
+                    }
+                }
+                self.encoder_attributes_json.update(data)
+            else:
+                print(f"Could not find attributes for: {encoder_name}")
+
+        if print_json:
+            formatted_matrix = json.dumps(self.encoder_attributes_json, indent=4)
+            print(formatted_matrix)
 
     def displayEncoderAttributes(self, encoder_list):
         """
@@ -403,13 +428,14 @@ class CompatibilityMatrix:
         """
         table_data = []
         headers = [
-            "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
+            "ID", "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
         ]
 
         for codec_name in codec_list:
             cdc_attributes = self.getCodecAttributes(codec_name)
             if cdc_attributes:
                 table_data.append([
+                    self.wrapText(cdc_attributes['id']),
                     codec_name,
                     self.wrapText(cdc_attributes['long_name']),
                     self.wrapText(cdc_attributes['type']),
@@ -420,6 +446,56 @@ class CompatibilityMatrix:
                 print(f"Could not find attributes for: {codec_name}")
 
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
+
+    def searchExtensionsAttributesJson(
+        self,
+        video_codec=None, audio_codec=None, extension=None
+    ):
+        """
+        Search all encoders, attributes, extensions etc to find which encoder
+        can support the audio, video and file extension
+        """
+        print(
+            "Searching for:\n"
+            f"\tExtension:\t{extension}\n"
+            f"\tVideo Codec:\t{video_codec}\n"
+            f"\tAudio Codec:\t{audio_codec}"
+        )
+
+        self.buildEncoderAttributesJson(
+            self.output_encoders
+        )
+
+        video_encoders = []
+        audio_encoders = []
+        extension_encoders = []
+
+        if video_codec:
+            for row_name, attributes in self.encoder_attributes_json.items():
+                if video_codec in attributes['attributes']['video_codecs']:
+                    video_encoders.append(row_name)
+
+        if audio_codec:
+            for row_name, attributes in self.encoder_attributes_json.items():
+                if audio_codec in attributes['attributes']['audio_codecs']:
+                    audio_encoders.append(row_name)
+
+        if extension:
+            for row_name, attributes in self.encoder_attributes_json.items():
+                if extension in attributes['attributes']['file_extensions']:
+                    extension_encoders.append(row_name)
+
+        sets_to_compare = [set(lst) for lst in [
+            video_encoders, audio_encoders, extension_encoders
+        ] if lst]
+
+        if not sets_to_compare:
+            return []
+
+        common_encoders = set.intersection(*sets_to_compare)
+        common_encoders = list(common_encoders)
+        print("Common encoders:", common_encoders)
+        return common_encoders
 
     def configureCliArguments(self):
         """
@@ -436,13 +512,44 @@ class CompatibilityMatrix:
         )
         parser.add_argument(
             '--all', action='store_true',
-            help='Display details for all Encoders'
+            help='Display details for all Encoders in a table'
+        )
+        parser.add_argument(
+            '--all-json', action='store_true',
+            help='Display details for all Encoders in json'
         )
         parser.add_argument(
             '--build-matrix', action='store_true',
             help='Build compatibility matrix'
         )
-        return parser.parse_args()
+
+        search_group = parser.add_argument_group(
+            'Search Options',
+            'Options to filter results based on criteria'
+        )
+        search_group.add_argument(
+            '--search', action='store_true',
+            help='Enable search functionality with subfields'
+        )
+        search_group.add_argument(
+            '--search_ext', metavar='<Extension>',
+            help='Filter results by file extension (e.g., mp4, mkv)'
+        )
+        search_group.add_argument(
+            '--search_video_codec', metavar='<CodecName>',
+            help='Filter results by video codec name (e.g., h264, hevc)'
+        )
+        search_group.add_argument(
+            '--search_audio_codec', metavar='<CodecName>',
+            help='Filter results by audio codec name (e.g., aac, mp3)'
+        )
+
+        args = parser.parse_args()
+
+        if args.search and not (args.search_ext or args.search_video_codec or args.search_audio_codec):
+            parser.error("--search requires at least one of --search_ext or --search_video_codec or --search_audio_codec")
+
+        return args
 
 if __name__ == "__main__":
     compatibility_matrix = CompatibilityMatrix()
@@ -464,4 +571,16 @@ if __name__ == "__main__":
     if args.all:
         compatibility_matrix.displayEncoderAttributes(
             compatibility_matrix.output_encoders
+        )
+
+    if args.all_json:
+        compatibility_matrix.buildEncoderAttributesJson(
+            compatibility_matrix.output_encoders, print_json=True
+        )
+
+    if args.search and (args.search_ext or args.search_video_codec or args.search_audio_codec):
+        compatibility_matrix.searchExtensionsAttributesJson(
+            video_codec=args.search_video_codec,
+            audio_codec=args.search_audio_codec,
+            extension=args.search_ext
         )
