@@ -31,7 +31,7 @@ class VideoProbe:
         return json.loads(result.stdout)
 
 
-    def getTranscodeSettingsFromFile(self, file_path):
+    def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None):
         """
         Uses ffprobe to extract codec and encoder information for the given media file.
         """
@@ -149,7 +149,7 @@ class VideoProbe:
             for item, value in transcode_data.items():
                 print(f"\t{item}: {value}")
 
-            ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data)
+            ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
 
             print("\nffmpeg command line:")
             print(f"\t{ffmpeg_command}\n")
@@ -157,18 +157,19 @@ class VideoProbe:
         else:
             print("\nUnable to replicate transcode settings\n")
 
-    def generateFfmpegTranscodeCommand(self, json_data):
+    def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
         Converts a JSON dictionary into an FFmpeg command line.
         """
         # Base command
         command = ["ffmpeg", "-y"]
 
-        # Input file (example, replace as needed)
-        input_file = "input_file.mp4"
-        output_file = f"output_file.{json_data.get('extension', 'mp4')}"
+        if not input_file:
+            input_file = "[input_file.mp4]"
+        if not output_file:
+            output_file = f"[output_file.{json_data.get('extension', 'mp4')}]"
 
-        command += ["-i", input_file]
+        command += ["-i", f"'{input_file}'"]
 
         # Video settings
         if json_data.get("video_codec"):
@@ -215,7 +216,7 @@ class VideoProbe:
             command += ["-b:a", json_data.get("audio_bit_rate")]
 
         # Input and output files
-        command.append(output_file)
+        command.append(f"'{output_file}'")
 
         # Return as a command string
         return " ".join(command)
@@ -271,23 +272,22 @@ class VideoProbe:
         )
         return table
 
-    def compareVideoJsonMetadata(self, source, dest, column_width=50, json_indent=4):
-        # Load JSON if paths are provided
+    def compareVideoJsonMetadata(
+        self, source, dest, column_width=50, json_indent=4
+    ):
         if isinstance(source, str):
             source = self.getFfprobeJsonFromFile(source)
         if isinstance(dest, str):
             dest = self.getFfprobeJsonFromFile(dest)
 
-        # Ensure valid JSON objects
         if not isinstance(source, dict) or not isinstance(dest, dict):
             print("Could not get file metadata")
             return {}
 
-        # Compare using DeepDiff
         diff = DeepDiff(source, dest, ignore_order=True)
-
-        # Generate tabulated output with JSON formatting
-        diff_table = self.generateTabulatedDiff(diff, column_width=column_width, json_indent=json_indent)
+        diff_table = self.generateTabulatedDiff(
+            diff, column_width=column_width, json_indent=json_indent
+        )
         print(diff_table)
 
     def configureCliArguments(self):
@@ -298,7 +298,13 @@ class VideoProbe:
             description=f"FF Prober"
         )
         parser.add_argument(
-            '--file', metavar='<File>', help="File path of file to inspect"
+            '--probe-file', metavar='<ProbeFile>', help="File path of file to inspect"
+        )
+        parser.add_argument(
+            '--input-file', metavar='<InputFile>', help="File path of file to convert"
+        )
+        parser.add_argument(
+            '--output-file', metavar='<OutputFile>', help="File path of file to output"
         )
         compare_group = parser.add_argument_group(
             'Compare video files',
@@ -331,8 +337,21 @@ if __name__ == "__main__":
 
     args = video_probe.configureCliArguments()
 
-    if args.file:
-        video_probe.getTranscodeSettingsFromFile(args.file)
+    input_file = None
+    output_file = None
+
+    if args.input_file:
+        input_file = args.input_file
+
+    if args.output_file:
+        output_file = args.output_file
+
+    if args.probe_file:
+        video_probe.getTranscodeSettingsFromFile(
+            args.probe_file,
+            input_file=input_file,
+            output_file=output_file
+        )
 
     if args.compare and (args.source or args.dest):
         video_probe.compareVideoJsonMetadata(args.source, args.dest)
