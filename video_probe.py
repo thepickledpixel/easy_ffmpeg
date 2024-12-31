@@ -49,6 +49,8 @@ class VideoProbe:
         search_audio_codec = None
         search_video_codec = None
 
+        tags = ffprobe_json.get('format', {}).get('tags', None)
+
         for stream in ffprobe_json['streams']:
             if stream.get('codec_type') == "audio":
                 search_audio_codec = stream.get('codec_name', None)
@@ -90,72 +92,80 @@ class VideoProbe:
 
         data.update({
             "container": {
-                "extension": search_extension
+                "extension": search_extension,
+                "tags": tags
             }
 
         })
 
         formatted_data = json.dumps(data, indent=4)
+        # print(formatted_data)
 
-        compatible_encoders = compatibility_matrix.searchExtensionsAttributesJson(
-            video_codec=search_video_codec,
-            audio_codec=search_audio_codec,
-            extension=search_extension
-        )
-
+        # compatible_video_encoders, compatible_audio_encoders =\
+        # compatibility_matrix.searchExtensionsAttributesJson(
+        #     video_codec=search_video_codec,
+        #     audio_codec=search_audio_codec,
+        #     extension=search_extension
+        # )
+        #
         transcode_data = {}
+        # compatible_encoders = compatible_video_encoders + compatible_audio_encoders
 
-        if len(compatible_encoders) > 0:
-            compatibility_matrix.displayEncoderAttributes(
-                compatible_encoders
-            )
+        # if len(compatible_encoders) > 0:
+        #     compatibility_matrix.displayEncoderAttributes(
+        #         compatible_encoders
+        #     )
 
-            transcode_data.update({
-                "encoder": compatible_encoders[0],
-                "extension": data['container']['extension']
-            })
+        compatibility_matrix.displayCodecAttributes
 
-            for channel, attributes in data.items():
+        transcode_data.update({
+            "extension": data['container']['extension'],
+            "tags": data['container']['tags']
+        })
 
-                if attributes.get('codec_type') == "video":
-                    transcode_data.update({
-                        "video_codec": attributes.get('codec_name', None),
-                        "video_width": attributes.get('width', None),
-                        "video_height": attributes.get('height', None),
-                        "video_pix_fmt": attributes.get('pix_fmt', None),
-                        "video_color_space": attributes.get('color_space', None),
-                        "video_color_transfer": attributes.get('color_transfer', None),
-                        "video_color_range": attributes.get('color_range', None),
-                        "video_profile": attributes.get('profile', "").lower().replace(" ", ""),
-                        "video_color_primaries": attributes.get('color_primaries', None),
-                        "video_frame_rate": attributes.get('r_frame_rate', None),
-                        "video_bit_rate": attributes.get('bit_rate', None),
-                        "video_time_base": attributes.get('time_base', None),
-                        "video_chroma_location": attributes.get('chroma_location', None),
-                        "video_has_b_frames": str(attributes.get('has_b_frames', None)),
-                        "video_level": str(attributes.get('level', None)),
-                        "video_field_order": attributes.get('field_order', None)
-                    })
-                if attributes.get('codec_type') == "audio":
-                    transcode_data.update({
-                        "audio_codec": attributes.get('codec_name', None),
-                        "audio_sample_rate": attributes.get('sample_rate', None),
-                        "audio_channels": attributes.get('channels', None),
-                        "audio_channel_layout": attributes.get('channel_layout', None),
-                        "audio_bit_rate": attributes.get('bit_rate', None)
-                    })
+        for channel, attributes in data.items():
 
-            print("\nTranscode Settings:")
-            for item, value in transcode_data.items():
-                print(f"\t{item}: {value}")
+            if attributes.get('codec_type') == "video":
+                compatibility_matrix.displayCodecAttributes([attributes.get('codec_name', None)])
+                transcode_data.update({
+                    "video_codec": attributes.get('codec_name', None),
+                    "video_width": attributes.get('width', None),
+                    "video_height": attributes.get('height', None),
+                    "video_pix_fmt": attributes.get('pix_fmt', None),
+                    "video_color_space": attributes.get('color_space', None),
+                    "video_color_transfer": attributes.get('color_transfer', None),
+                    "video_color_range": attributes.get('color_range', None),
+                    "video_profile": (attributes.get('profile', "") or "").lower().replace(" ", ""),
+                    "video_color_primaries": attributes.get('color_primaries', None),
+                    "video_frame_rate": attributes.get('r_frame_rate', None),
+                    "video_bit_rate": attributes.get('bit_rate', None),
+                    "video_time_base": attributes.get('time_base', None),
+                    "video_chroma_location": attributes.get('chroma_location', None),
+                    "video_has_b_frames": str(attributes.get('has_b_frames', None)),
+                    "video_level": str(attributes.get('level', None)),
+                    "video_field_order": attributes.get('field_order', None)
+                })
+            if attributes.get('codec_type') == "audio":
+                compatibility_matrix.displayCodecAttributes([attributes.get('codec_name', None)])
+                transcode_data.update({
+                    "audio_codec": attributes.get('codec_name', None),
+                    "audio_sample_rate": attributes.get('sample_rate', None),
+                    "audio_channels": attributes.get('channels', None),
+                    "audio_channel_layout": attributes.get('channel_layout', None),
+                    "audio_bit_rate": attributes.get('bit_rate', None)
+                })
 
-            ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
+        print("\nTranscode Settings:")
+        for item, value in transcode_data.items():
+            print(f"\t{item}: {value}")
 
-            print("\nffmpeg command line:")
-            print(f"\t{ffmpeg_command}\n")
+        ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
 
-        else:
-            print("\nUnable to replicate transcode settings\n")
+        print("\nffmpeg command line:")
+        print(f"\n{ffmpeg_command}\n")
+
+        # else:
+        #     print("\nUnable to replicate transcode settings\n")
 
     def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
@@ -175,8 +185,10 @@ class VideoProbe:
         if json_data.get("video_codec"):
             command += ["-c:v", json_data.get("video_codec")]
         if json_data.get("video_width") and json_data.get("video_height"):
+            # command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')},format={json_data.get('video_pix_fmt')}"]
             command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"]
         if json_data.get("video_pix_fmt"):
+            # if json_data.get("video_codec") != "dvvideo":
             command += ["-pix_fmt", json_data.get("video_pix_fmt")]
         if json_data.get("video_color_space"):
             command += ["-colorspace", json_data.get("video_color_space")]
@@ -193,6 +205,7 @@ class VideoProbe:
         if json_data.get("video_bit_rate"):
             command += ["-b:v", json_data.get("video_bit_rate")]
         if json_data.get("video_chroma_location"):
+            # if json_data.get("video_codec") != "dvvideo":
             command += ["-chroma_sample_location", json_data.get("video_chroma_location")]
         if json_data.get("video_has_b_frames"):
             command += ["-bf", json_data.get("video_has_b_frames")]
@@ -201,6 +214,7 @@ class VideoProbe:
         if json_data.get("video_level"):
             command += ["-level:v", json_data.get("video_level")]
         if json_data.get("video_field_order"):
+            # if json_data.get("video_codec") != "dvvideo":
             command += ["-field_order", json_data.get("video_field_order")]
 
         # Audio settings
@@ -214,6 +228,13 @@ class VideoProbe:
             command += ["-channel_layout", json_data.get("audio_channel_layout")]
         if json_data.get("audio_bit_rate"):
             command += ["-b:a", json_data.get("audio_bit_rate")]
+
+        if json_data.get("tags"):
+            tags = json_data.get("tags")
+            for key, value in tags.items():
+                command += ["-metadata", f"'{key}={value}'"]
+
+        # command += ['-err_detect', 'ignore_err']x
 
         # Input and output files
         command.append(f"'{output_file}'")

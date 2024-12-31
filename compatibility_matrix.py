@@ -496,7 +496,7 @@ class CompatibilityMatrix:
 
         common_encoders = set.intersection(*sets_to_compare)
         common_encoders = list(common_encoders)
-        print(f"\nCommon encoder(s): {common_encoders}\n")
+        print("Common encoders:", common_encoders)
         return common_encoders
 
     def configureCliArguments(self):
