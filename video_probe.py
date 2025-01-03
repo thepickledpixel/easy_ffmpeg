@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 import json
 import argparse
 from tabulate import tabulate
@@ -26,23 +27,32 @@ class VideoProbe:
                 command, capture_output=True, text=True, check=True
             )
         except Exception as e:
-            print(e)
-            return None
+            # print(e)
+            return {}
         return json.loads(result.stdout)
 
+    def wrapText(self, items, width=20):
+        """
+        Wrap a list or string into multiple lines.
+        """
+        if isinstance(items, list):
+            return "\n".join(textwrap.wrap(", ".join(items), width=width))
+        elif isinstance(items, str):
+            return "\n".join(textwrap.wrap(items, width=width))
+        return items
 
     def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None):
         """
         Uses ffprobe to extract codec and encoder information for the given media file.
         """
         ffprobe_json = self.getFfprobeJsonFromFile(file_path)
+        if not ffprobe_json:
+            print(f"\nUnable to get metadata for {file_path}\n")
+            return
 
         data = {}
 
         formatted_data = json.dumps(ffprobe_json, indent=4)
-        # print(formatted_data)
-        # quit()
-
         _, extension = os.path.splitext(file_path)
 
         search_extension = None
@@ -50,6 +60,7 @@ class VideoProbe:
         search_video_codec = None
 
         tags = ffprobe_json.get('format', {}).get('tags', None)
+        format_bitrate = ffprobe_json.get('format', {}).get('bit_rate', None)
 
         for stream in ffprobe_json['streams']:
             if stream.get('codec_type') == "audio":
@@ -99,73 +110,87 @@ class VideoProbe:
         })
 
         formatted_data = json.dumps(data, indent=4)
+
         # print(formatted_data)
 
-        # compatible_video_encoders, compatible_audio_encoders =\
-        # compatibility_matrix.searchExtensionsAttributesJson(
-        #     video_codec=search_video_codec,
-        #     audio_codec=search_audio_codec,
-        #     extension=search_extension
-        # )
-        #
         transcode_data = {}
-        # compatible_encoders = compatible_video_encoders + compatible_audio_encoders
-
-        # if len(compatible_encoders) > 0:
-        #     compatibility_matrix.displayEncoderAttributes(
-        #         compatible_encoders
-        #     )
-
-        compatibility_matrix.displayCodecAttributes
 
         transcode_data.update({
             "extension": data['container']['extension'],
             "tags": data['container']['tags']
         })
 
-        for channel, attributes in data.items():
-
+        for stream, attributes in data.items():
             if attributes.get('codec_type') == "video":
-                compatibility_matrix.displayCodecAttributes([attributes.get('codec_name', None)])
-                transcode_data.update({
-                    "video_codec": attributes.get('codec_name', None),
-                    "video_width": attributes.get('width', None),
-                    "video_height": attributes.get('height', None),
-                    "video_pix_fmt": attributes.get('pix_fmt', None),
-                    "video_color_space": attributes.get('color_space', None),
-                    "video_color_transfer": attributes.get('color_transfer', None),
-                    "video_color_range": attributes.get('color_range', None),
-                    "video_profile": (attributes.get('profile', "") or "").lower().replace(" ", ""),
-                    "video_color_primaries": attributes.get('color_primaries', None),
-                    "video_frame_rate": attributes.get('r_frame_rate', None),
-                    "video_bit_rate": attributes.get('bit_rate', None),
-                    "video_time_base": attributes.get('time_base', None),
-                    "video_chroma_location": attributes.get('chroma_location', None),
-                    "video_has_b_frames": str(attributes.get('has_b_frames', None)),
-                    "video_level": str(attributes.get('level', None)),
-                    "video_field_order": attributes.get('field_order', None)
-                })
+                detected_video = compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
+                if detected_video:
+                    transcode_data.update({
+                        "video_codec": attributes.get('codec_name', None),
+                        "video_width": attributes.get('width', None),
+                        "video_height": attributes.get('height', None),
+                        "video_pix_fmt": attributes.get('pix_fmt', None),
+                        "video_color_space": attributes.get('color_space', None),
+                        "video_color_transfer": attributes.get('color_transfer', None),
+                        "video_color_range": attributes.get('color_range', None),
+                        "video_profile": (attributes.get('profile', "") or "").lower().replace(" ", ""),
+                        "video_color_primaries": attributes.get('color_primaries', None),
+                        "video_frame_rate": attributes.get('r_frame_rate', None),
+                        "video_bit_rate": attributes.get('bit_rate', None),
+                        "video_time_base": attributes.get('time_base', None),
+                        "video_chroma_location": attributes.get('chroma_location', None),
+                        "video_has_b_frames": str(attributes.get('has_b_frames', None)),
+                        "video_level": str(attributes.get('level', None)),
+                        "video_field_order": attributes.get('field_order', None)
+                    })
+                    if not transcode_data['video_bit_rate']:
+                        transcode_data['video_bit_rate'] = format_bitrate
             if attributes.get('codec_type') == "audio":
-                compatibility_matrix.displayCodecAttributes([attributes.get('codec_name', None)])
-                transcode_data.update({
-                    "audio_codec": attributes.get('codec_name', None),
-                    "audio_sample_rate": attributes.get('sample_rate', None),
-                    "audio_channels": attributes.get('channels', None),
-                    "audio_channel_layout": attributes.get('channel_layout', None),
-                    "audio_bit_rate": attributes.get('bit_rate', None)
-                })
+                detected_audio = compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
+                if detected_audio:
+                    transcode_data.update({
+                        "audio_codec": attributes.get('codec_name', None),
+                        "audio_sample_rate": attributes.get('sample_rate', None),
+                        "audio_channels": attributes.get('channels', None),
+                        "audio_channel_layout": attributes.get('channel_layout', None),
+                        "audio_bit_rate": attributes.get('bit_rate', None)
+                    })
+
+        if not detected_video and not detected_audio:
+            print("Could not detect any video or audio settings")
+            return
+
+        table_data = []
+        headers = [
+            "ID", "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
+        ]
+
+        codec_settings = [detected_video, detected_audio]
+
+        for row in codec_settings:
+            table_data.append([
+                self.wrapText(row['id']),
+                self.wrapText(row['codec_name']),
+                self.wrapText(row['long_name']),
+                self.wrapText(row['type']),
+                self.wrapText(row['video_formats']),
+                self.wrapText(row['audio_formats']),
+            ])
+
+        print("\nDetected Codecs:")
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
         print("\nTranscode Settings:")
+        table_data = []
+        headers = ['Setting', 'Value']
         for item, value in transcode_data.items():
-            print(f"\t{item}: {value}")
+            table_data.append([self.wrapText(item), self.formatJson(self.wrapText(value))])
+
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
 
         ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
 
         print("\nffmpeg command line:")
         print(f"\n{ffmpeg_command}\n")
-
-        # else:
-        #     print("\nUnable to replicate transcode settings\n")
 
     def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
@@ -175,7 +200,7 @@ class VideoProbe:
         command = ["ffmpeg", "-y"]
 
         if not input_file:
-            input_file = "[input_file.mp4]"
+            input_file = "[input_file]"
         if not output_file:
             output_file = f"[output_file.{json_data.get('extension', 'mp4')}]"
 
@@ -185,10 +210,8 @@ class VideoProbe:
         if json_data.get("video_codec"):
             command += ["-c:v", json_data.get("video_codec")]
         if json_data.get("video_width") and json_data.get("video_height"):
-            # command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')},format={json_data.get('video_pix_fmt')}"]
             command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"]
         if json_data.get("video_pix_fmt"):
-            # if json_data.get("video_codec") != "dvvideo":
             command += ["-pix_fmt", json_data.get("video_pix_fmt")]
         if json_data.get("video_color_space"):
             command += ["-colorspace", json_data.get("video_color_space")]
@@ -205,7 +228,6 @@ class VideoProbe:
         if json_data.get("video_bit_rate"):
             command += ["-b:v", json_data.get("video_bit_rate")]
         if json_data.get("video_chroma_location"):
-            # if json_data.get("video_codec") != "dvvideo":
             command += ["-chroma_sample_location", json_data.get("video_chroma_location")]
         if json_data.get("video_has_b_frames"):
             command += ["-bf", json_data.get("video_has_b_frames")]
@@ -214,7 +236,6 @@ class VideoProbe:
         if json_data.get("video_level"):
             command += ["-level:v", json_data.get("video_level")]
         if json_data.get("video_field_order"):
-            # if json_data.get("video_codec") != "dvvideo":
             command += ["-field_order", json_data.get("video_field_order")]
 
         # Audio settings
@@ -234,12 +255,8 @@ class VideoProbe:
             for key, value in tags.items():
                 command += ["-metadata", f"'{key}={value}'"]
 
-        # command += ['-err_detect', 'ignore_err']x
-
-        # Input and output files
         command.append(f"'{output_file}'")
 
-        # Return as a command string
         return " ".join(command)
 
     def formatJson(self, value, indent=4):
@@ -256,16 +273,14 @@ class VideoProbe:
         """
         table_data = []
 
-        # Process values_changed
         if "values_changed" in diff:
             for key, change in diff["values_changed"].items():
                 table_data.append([
-                    key,  # Path
+                    key,
                     self.formatJson(change["old_value"], indent=json_indent),
                     self.formatJson(change["new_value"], indent=json_indent)
                 ])
 
-        # Process iterable_item_removed
         if "iterable_item_removed" in diff:
             for key, removed in diff["iterable_item_removed"].items():
                 table_data.append([
@@ -274,7 +289,6 @@ class VideoProbe:
                     "Removed"
                 ])
 
-        # Process iterable_item_added
         if "iterable_item_added" in diff:
             for key, added in diff["iterable_item_added"].items():
                 table_data.append([
@@ -283,7 +297,6 @@ class VideoProbe:
                     self.formatJson(added, indent=json_indent)
                 ])
 
-        # Generate a tabulated table
         table = tabulate(
             table_data,
             headers=["Path", "Old Value", "New Value"],
@@ -319,6 +332,10 @@ class VideoProbe:
             description=f"FF Prober"
         )
         parser.add_argument(
+            'probe_file', metavar='<ProbeFile>', nargs='?',
+            help="File path of file to inspect (positional argument)"
+        )
+        parser.add_argument(
             '--probe-file', metavar='<ProbeFile>', help="File path of file to inspect"
         )
         parser.add_argument(
@@ -345,12 +362,13 @@ class VideoProbe:
         )
 
         args = parser.parse_args()
+        if args.probe_file is None and not args.compare:
+            parser.error("Require a probe file")
 
         if args.compare and not (args.source and args.dest):
             parser.error("--compare requires --source & --dest file paths")
 
         return args
-
 
 if __name__ == "__main__":
     compatibility_matrix = CompatibilityMatrix()
@@ -368,11 +386,15 @@ if __name__ == "__main__":
         output_file = args.output_file
 
     if args.probe_file:
-        video_probe.getTranscodeSettingsFromFile(
-            args.probe_file,
-            input_file=input_file,
-            output_file=output_file
-        )
+        if os.path.exists(args.probe_file):
+            video_probe.getTranscodeSettingsFromFile(
+                args.probe_file,
+                input_file=input_file,
+                output_file=output_file
+            )
+        else:
+            print(f"\nFile does not exists: {args.probe_file}\n")
+            sys.exit(1)
 
     if args.compare and (args.source or args.dest):
         video_probe.compareVideoJsonMetadata(args.source, args.dest)

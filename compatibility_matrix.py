@@ -330,7 +330,6 @@ class CompatibilityMatrix:
         Wrap a list or string into multiple lines.
         """
         if isinstance(items, list):
-            # Join the items with commas and wrap the resulting string
             return "\n".join(textwrap.wrap(", ".join(items), width=width))
         elif isinstance(items, str):
             return "\n".join(textwrap.wrap(items, width=width))
@@ -358,6 +357,7 @@ class CompatibilityMatrix:
 
         data = {
             "id": self.getCodecID(codec),
+            "codec_name": codec_name,
             "long_name": self.getCodecLongName(codec),
             "type": self.getCodecType(codec),
             "video_formats": self.getCodecVideoFormats(codec),
@@ -432,22 +432,25 @@ class CompatibilityMatrix:
         headers = [
             "ID", "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
         ]
+        valid_codecs = []
 
         for codec_name in codec_list:
             cdc_attributes = self.getCodecAttributes(codec_name)
             if cdc_attributes:
                 table_data.append([
                     self.wrapText(cdc_attributes['id']),
-                    codec_name,
+                    self.wrapText(cdc_attributes['codec_name']),
                     self.wrapText(cdc_attributes['long_name']),
                     self.wrapText(cdc_attributes['type']),
                     self.wrapText(cdc_attributes['video_formats']),
                     self.wrapText(cdc_attributes['audio_formats']),
                 ])
+                valid_codecs.append(codec_name)
             else:
                 print(f"Could not find attributes for: {codec_name}")
 
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
+        return valid_codecs
 
     def searchExtensionsAttributesJson(
         self,
