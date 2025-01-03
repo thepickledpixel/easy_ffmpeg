@@ -11,7 +11,7 @@ from compatibility_matrix import CompatibilityMatrix
 
 class VideoProbe:
     def __init__(self):
-        self.no_value = None
+        self.compatibility_matrix = CompatibilityMatrix()
 
     def getFfprobeJsonFromFile(self, file_path):
         try:
@@ -58,6 +58,9 @@ class VideoProbe:
         search_extension = None
         search_audio_codec = None
         search_video_codec = None
+
+        detected_video = None
+        detected_audio = None
 
         tags = ffprobe_json.get('format', {}).get('tags', None)
         format_bitrate = ffprobe_json.get('format', {}).get('bit_rate', None)
@@ -122,7 +125,7 @@ class VideoProbe:
 
         for stream, attributes in data.items():
             if attributes.get('codec_type') == "video":
-                detected_video = compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
+                detected_video = self.compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
                 if detected_video:
                     transcode_data.update({
                         "video_codec": attributes.get('codec_name', None),
@@ -145,7 +148,7 @@ class VideoProbe:
                     if not transcode_data['video_bit_rate']:
                         transcode_data['video_bit_rate'] = format_bitrate
             if attributes.get('codec_type') == "audio":
-                detected_audio = compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
+                detected_audio = self.compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
                 if detected_audio:
                     transcode_data.update({
                         "audio_codec": attributes.get('codec_name', None),
@@ -167,14 +170,15 @@ class VideoProbe:
         codec_settings = [detected_video, detected_audio]
 
         for row in codec_settings:
-            table_data.append([
-                self.wrapText(row['id']),
-                self.wrapText(row['codec_name']),
-                self.wrapText(row['long_name']),
-                self.wrapText(row['type']),
-                self.wrapText(row['video_formats']),
-                self.wrapText(row['audio_formats']),
-            ])
+            if row:
+                table_data.append([
+                    self.wrapText(row['id']),
+                    self.wrapText(row['codec_name']),
+                    self.wrapText(row['long_name']),
+                    self.wrapText(row['type']),
+                    self.wrapText(row['video_formats']),
+                    self.wrapText(row['audio_formats']),
+                ])
 
         print("\nDetected Codecs:")
         print(tabulate(table_data, headers=headers, tablefmt="grid"))
@@ -370,31 +374,32 @@ class VideoProbe:
 
         return args
 
+    def main(self):
+        args = self.configureCliArguments()
+
+        input_file = None
+        output_file = None
+
+        if args.input_file:
+            input_file = args.input_file
+
+        if args.output_file:
+            output_file = args.output_file
+
+        if args.probe_file:
+            if os.path.exists(args.probe_file):
+                self.getTranscodeSettingsFromFile(
+                    args.probe_file,
+                    input_file=input_file,
+                    output_file=output_file
+                )
+            else:
+                print(f"\nFile does not exists: {args.probe_file}\n")
+                sys.exit(1)
+
+        if args.compare and (args.source or args.dest):
+            self.compareVideoJsonMetadata(args.source, args.dest)
+
 if __name__ == "__main__":
-    compatibility_matrix = CompatibilityMatrix()
     video_probe = VideoProbe()
-
-    args = video_probe.configureCliArguments()
-
-    input_file = None
-    output_file = None
-
-    if args.input_file:
-        input_file = args.input_file
-
-    if args.output_file:
-        output_file = args.output_file
-
-    if args.probe_file:
-        if os.path.exists(args.probe_file):
-            video_probe.getTranscodeSettingsFromFile(
-                args.probe_file,
-                input_file=input_file,
-                output_file=output_file
-            )
-        else:
-            print(f"\nFile does not exists: {args.probe_file}\n")
-            sys.exit(1)
-
-    if args.compare and (args.source or args.dest):
-        video_probe.compareVideoJsonMetadata(args.source, args.dest)
+    video_probe.main()
