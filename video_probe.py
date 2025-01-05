@@ -33,7 +33,7 @@ class VideoProbe:
             return {}
         return json.loads(result.stdout)
 
-    def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None):
+    def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None, run_command=False):
         """
         Uses ffprobe to extract codec and encoder information for the given media file.
         """
@@ -57,8 +57,6 @@ class VideoProbe:
 
         tags = ffprobe_json.get('format', {}).get('tags', None)
         format_bitrate = ffprobe_json.get('format', {}).get('bit_rate', None)
-
-
 
         for stream in ffprobe_json['streams']:
             if stream.get('codec_type') == "audio":
@@ -168,8 +166,14 @@ class VideoProbe:
 
         ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
 
+        command_string = " ".join(ffmpeg_command)
         print("\nffmpeg command line:")
-        print(f"\n{ffmpeg_command}\n")
+        print(f"\n{command_string}\n")
+
+        if run_command is True:
+            print(ffmpeg_command)
+            result = self.compatibility_matrix.ffmpegOutput(ffmpeg_command)
+            print(result.stdout)
 
     def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
@@ -262,7 +266,8 @@ class VideoProbe:
 
         command.append(f"'{output_file}'")
 
-        return " ".join(command)
+        # return " ".join(command)
+        return command
 
     def reformatJsonForTable(self, json_data):
         """
@@ -418,6 +423,10 @@ class VideoProbe:
         parser.add_argument(
             '--output-file', metavar='<OutputFile>', help="File path of file to output"
         )
+        parser.add_argument(
+            '--run-command', action='store_true',
+            help='Start transcoding using ffmpeg'
+        )
         compare_group = parser.add_argument_group(
             'Compare video files',
             'Compare detailed metadata from two files'
@@ -457,6 +466,7 @@ class VideoProbe:
 
         input_file = None
         output_file = None
+        run_command = False
 
         if args.input_file:
             input_file = args.input_file
@@ -464,12 +474,16 @@ class VideoProbe:
         if args.output_file:
             output_file = args.output_file
 
+        if args.run_command:
+            run_command = True
+
         if args.probe_file:
             if os.path.exists(args.probe_file):
                 self.getTranscodeSettingsFromFile(
                     args.probe_file,
                     input_file=input_file,
-                    output_file=output_file
+                    output_file=output_file,
+                    run_command=run_command
                 )
             else:
                 print(f"\nFile does not exists: {args.probe_file}\n")
