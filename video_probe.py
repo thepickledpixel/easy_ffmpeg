@@ -63,8 +63,13 @@ class VideoProbe:
             "channel_layout":   "audio_channel_layout",
             "bit_rate":         "audio_bit_rate"
         }
+        self.valid_dnx_bitrates = [
+            36, 42, 45, 60, 63, 75, 80, 84, 90, 100, 110, 115,
+            120, 145, 175, 180, 185, 220, 240, 290, 350, 365,
+            390, 440, 730, 880
+        ]
 
-    def getFfprobeJsonFromFile(self, file_path):
+    def ffprobeJsonFromFile(self, file_path):
         try:
             command = [
                 "ffprobe",
@@ -101,15 +106,14 @@ class VideoProbe:
 
     def checkOutputFileExtension(self, container_ext, output_file):
         if output_file:
-            if os.path.exists(output_file):
-                output_file_no_ext, output_file_ext = os.path.splitext(output_file)
-                if output_file_ext.lstrip(".").lower() != container_ext:
-                    print(
-                        f"\nSpecified file extension {output_file_ext}"
-                        f" does not match container format of {container_ext}."
-                        f" Switching extension to {container_ext}"
-                    )
-                    output_file = f"{output_file_no_ext}.{container_ext}"
+            output_file_no_ext, output_file_ext = os.path.splitext(output_file)
+            if output_file_ext.lstrip(".").lower() != container_ext:
+                print(
+                    f"\nSpecified file extension {output_file_ext}"
+                    f" does not match container format of {container_ext}."
+                    f" Switching extension to {container_ext}"
+                )
+                output_file = f"{output_file_no_ext}.{container_ext}"
         return output_file
 
     def getTranscodeSettingsFromFile(
@@ -119,20 +123,18 @@ class VideoProbe:
         Uses ffprobe to extract codec/encoder info for the given media file,
         then generates a dictionary of transcode settings and prints a command line.
         """
-        ffprobe_json = self.getFfprobeJsonFromFile(file_path)
+        ffprobe_json = self.ffprobeJsonFromFile(file_path)
         if not ffprobe_json:
             print(f"\nUnable to get metadata for {file_path}\n")
             return
 
-        # Gather container info
         _, extension = os.path.splitext(file_path)
         format_info  = ffprobe_json.get("format", {})
         format_tags  = format_info.get("tags", {})
-        format_brate = format_info.get("bit_rate")  # fallback for video_bit_rate
+        format_brate = format_info.get("bit_rate")
         container_ext = extension.lstrip(".").lower()
         output_file = self.checkOutputFileExtension(container_ext, output_file)
 
-        # Initialize the main transcode_data with container info
         transcode_data = {
             "extension": container_ext,
             "tags":      format_tags
@@ -141,46 +143,74 @@ class VideoProbe:
         detected_video = None
         detected_audio = None
 
-        # Loop through streams once, update transcode_data
         for stream in ffprobe_json.get("streams", []):
             codec_type = stream.get("codec_type")
-            # Check if we support video codec
+
             if codec_type == "video":
                 video_codec_name = stream.get("codec_name")
-                detected_video   = self.compatibility_matrix.getCodecAttributes(video_codec_name)
+                detected_video   = self.compatibility_matrix.getCodecAttributes(
+                    video_codec_name
+                )
                 if detected_video:
-                    # Merge fields from the ffprobe stream into transcode_data
-                    self.mergeVideoStreamIntoTranscodeData(stream, transcode_data, format_brate)
+                    self.mergeVideoStreamIntoTranscodeData(
+                        stream, transcode_data, format_brate
+                    )
 
-            # Check if we support audio codec
             elif codec_type == "audio":
                 audio_codec_name = stream.get("codec_name")
-                detected_audio   = self.compatibility_matrix.getCodecAttributes(audio_codec_name)
+                detected_audio   = self.compatibility_matrix.getCodecAttributes(
+                    audio_codec_name
+                )
                 if detected_audio:
-                    self.mergeAudioStreamIntoTranscodeData(stream, transcode_data)
+                    self.mergeAudioStreamIntoTranscodeData(
+                        stream, transcode_data
+                    )
 
-        # If no streams are supported, bail
         if not detected_video and not detected_audio:
             print("Could not detect any video or audio settings")
             return
 
         # Show detected codecs and the final transcode data
         print("\nDetected Codecs:")
-        self.compatibility_matrix.jsonToTable([detected_video, detected_audio])
+        self.compatibility_matrix.jsonToTable(
+            [detected_video, detected_audio]
+        )
 
         print("\nTranscode Settings:")
-        self.compatibility_matrix.jsonToTable(self.reformatJsonForTable(transcode_data))
+        self.compatibility_matrix.jsonToTable(
+            self.reformatJsonForTable(transcode_data)
+        )
 
         # Generate the FFmpeg command and (optionally) run it
-        ffmpeg_command = self.ffmpegGenerateTranscodeCommand(transcode_data, input_file, output_file)
-        # cmd_string     = " ".join(ffmpeg_command)
-        cmd_string     = " ".join(shlex.quote(arg) for arg in ffmpeg_command)
+        ffmpeg_command = self.ffmpegGenerateTranscodeCommand(
+            transcode_data, input_file, output_file
+        )
+        cmd_string = " ".join(shlex.quote(arg) for arg in ffmpeg_command)
 
         print("\nffmpeg command line:\n")
         print(cmd_string, "\n")
 
         if run_command:
             self.ffmpegRun(ffmpeg_command)
+
+    def checkDnxBitrate(self, transcode_data):
+        if transcode_data.get("video_codec") == "dnxhd":
+            original_rate = transcode_data.get("video_bit_rate", 0)
+            new_rate = self.snapDnxBitrate(original_rate)
+            transcode_data["video_bit_rate"] = new_rate
+            print(f"Snapped DNxHD bitrate from {original_rate} to {new_rate}")
+        return transcode_data
+
+    def snapDnxBitrate(self, input_bitrate):
+        """
+        Given an input_bitrate (in Mbps), return the closest valid DNxHD bitrate.
+        """
+        input_bitrate = float(input_bitrate) / 1_000_000.0
+        closest_bitrate = min(
+            self.valid_dnx_bitrates,
+            key=lambda x: abs(x - input_bitrate)
+        )
+        return f"{closest_bitrate}M"
 
     def mergeVideoStreamIntoTranscodeData(self, stream, transcode_data, format_brate):
         """
@@ -197,6 +227,8 @@ class VideoProbe:
         # If there's no dedicated video_bit_rate, fallback to container bit_rate
         if not transcode_data.get("video_bit_rate"):
             transcode_data["video_bit_rate"] = format_brate
+
+        transcode_data = self.checkDnxBitrate(transcode_data)
 
         if transcode_data.get("video_profile"):
             profile_str = transcode_data["video_profile"] or ""
@@ -215,7 +247,7 @@ class VideoProbe:
         input_file_interlaced = False
         input_file_ffprobe_json = None
         if input_file:
-            input_file_ffprobe_json = self.getFfprobeJsonFromFile(input_file)
+            input_file_ffprobe_json = self.ffprobeJsonFromFile(input_file)
             if input_file_ffprobe_json:
                 for stream in input_file_ffprobe_json.get("streams", []):
                     if stream.get("codec_type") == "video":
@@ -323,22 +355,22 @@ class VideoProbe:
             reformatted.append({"setting": key, "value": value})
         return reformatted
 
-    def compareJsonBlobs(self, json1, json2, matches=None, diff=None):
+    def compareJsonBlobs(self, json1, json2):
         """
         Compares two JSON objects and displays two tables:
-        1. Differences between the objects.
-        2. Matches (keys and values that are the same in both objects).
+        1. Differences between the objects
+        2. Matches (keys/values that are identical)
         """
         differences, matches = self.getJsonComparisons(json1, json2)
 
-        if self.compare_diff is True:
+        if self.compare_diff:
             print("\nDifferences:")
             if differences:
                 self.compatibility_matrix.jsonToTable(differences)
             else:
                 print("No differences found!")
 
-        if self.compare_matches is True:
+        if self.compare_matches:
             print("\nMatches:")
             if matches:
                 self.compatibility_matrix.jsonToTable(matches)
@@ -348,79 +380,73 @@ class VideoProbe:
     def getJsonComparisons(self, json1, json2):
         """
         Recursively compares two JSON objects and returns two lists:
-        1. Differences (keys/values that differ).
-        2. Matches (keys/values that are identical).
+        1. differences (keys/values that differ)
+        2. matches (keys/values that match)
         """
         differences = []
         matches = []
-        self.compareDicts(json1, json2, differences, matches)
+        self.compareItems(json1, json2, differences, matches, parentKey="")
         return differences, matches
+
+    def compareItems(self, value1, value2, differences, matches, parentKey=""):
+        """
+        Main comparison method that checks whether values are dict, list, or scalars.
+        Delegates to compareDicts / compareLists if needed, otherwise compares directly.
+        """
+        if isinstance(value1, dict) and isinstance(value2, dict):
+            self.compareDicts(value1, value2, differences, matches, parentKey)
+        elif isinstance(value1, list) and isinstance(value2, list):
+            self.compareLists(value1, value2, differences, matches, parentKey)
+        else:
+            # Direct scalar comparison
+            if value1 != value2:
+                differences.append({
+                    "Section": parentKey.rsplit('.', 1)[0] if '.' in parentKey else "",
+                    "Setting": parentKey,
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
+                })
+            else:
+                matches.append({
+                    "Section": parentKey.rsplit('.', 1)[0] if '.' in parentKey else "",
+                    "Setting": parentKey,
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
+                })
 
     def compareDicts(self, dict1, dict2, differences, matches, parentKey=""):
         """
-        Recursively compares two dictionaries and appends differences and matches.
-        Handles nested dictionaries and lists.
+        Compares two dictionaries, iterating through their keys.
+        Delegates the actual item comparison to compareItems.
         """
-        allKeys = set(dict1.keys()).union(set(dict2.keys()))
+        allKeys = set(dict1.keys()) | set(dict2.keys())
         for key in allKeys:
             fullKey = f"{parentKey}.{key}" if parentKey else key
-            value1 = dict1.get(key)
-            value2 = dict2.get(key)
-
-            if isinstance(value1, dict) and isinstance(value2, dict):
-                self.compareDicts(value1, value2, differences, matches, fullKey)
-            elif isinstance(value1, list) and isinstance(value2, list):
-                self.compareLists(value1, value2, differences, matches, fullKey)
-            elif value1 != value2:
-                differences.append({
-                    "Section": parentKey,
-                    "Setting": fullKey,
-                    "Value in JSON1": value1,
-                    "Value in JSON2": value2
-                })
-            else:
-                matches.append({
-                    "Section": parentKey,
-                    "Setting": fullKey,
-                    "Value in JSON1": value1,
-                    "Value in JSON2": value2
-                })
+            val1 = dict1.get(key)
+            val2 = dict2.get(key)
+            # Compare the items under this key
+            self.compareItems(val1, val2, differences, matches, parentKey=fullKey)
 
     def compareLists(self, list1, list2, differences, matches, parentKey=""):
         """
-        Compares two lists and appends differences and matches.
-        Handles lists of dictionaries by comparing them recursively.
+        Compares two lists by index.
+        Delegates the actual item comparison to compareItems.
         """
-        maxLength = max(len(list1), len(list2))
-        for i in range(maxLength):
-            value1 = list1[i] if i < len(list1) else None
-            value2 = list2[i] if i < len(list2) else None
+        maxLen = max(len(list1), len(list2))
+        for i in range(maxLen):
+            val1 = list1[i] if i < len(list1) else None
+            val2 = list2[i] if i < len(list2) else None
             fullKey = f"{parentKey}[{i}]"
-
-            if isinstance(value1, dict) and isinstance(value2, dict):
-                self.compareDicts(value1, value2, differences, matches, fullKey)
-            elif value1 != value2:
-                differences.append({
-                    "Section": parentKey,
-                    "Setting": fullKey,
-                    "Value in JSON1": value1,
-                    "Value in JSON2": value2
-                })
-            else:
-                matches.append({
-                    "Section": parentKey,
-                    "Setting": fullKey,
-                    "Value in JSON1": value1,
-                    "Value in JSON2": value2
-                })
+            # Compare the items at this index
+            self.compareItems(val1, val2, differences, matches, parentKey=fullKey)
 
     def compareVideoJsonMetadata(
         self, source, dest, column_width=50, json_indent=4
     ):
         if isinstance(source, str):
-            source = self.getFfprobeJsonFromFile(source)
+            source = self.ffprobeJsonFromFile(source)
         if isinstance(dest, str):
-            dest = self.getFfprobeJsonFromFile(dest)
+            dest = self.ffprobeJsonFromFile(dest)
 
         if not isinstance(source, dict) or not isinstance(dest, dict):
             print("Could not get file metadata")
