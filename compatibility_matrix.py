@@ -85,6 +85,16 @@ class CompatibilityMatrix:
         )
         return result
 
+    def ffmpegCheckInstalled(self):
+        try:
+            result = self.ffmpegOutput(["ffmpeg", "-version"])
+            if result.returncode == 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            return False
+
     def getMuxers(self) -> list:
         """
         Get a list of available Muxers from the FFmpeg command line.
@@ -569,6 +579,10 @@ class CompatibilityMatrix:
 if __name__ == "__main__":
     compatibility_matrix = CompatibilityMatrix()
     args = compatibility_matrix.configureCliArguments()
+
+    if not compatibility_matrix.ffmpegCheckInstalled():
+        print("ffmpeg is not installed correctly")
+        sys.exit(1)
 
     if args.build_matrix:
         compatibility_matrix.buildCompatibilityMatrix()

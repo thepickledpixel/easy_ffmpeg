@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import shlex
 import argparse
 import subprocess
 import textwrap
@@ -37,6 +38,31 @@ class VideoProbe:
             "audio_channel_layout":  ("-channel_layout", None),
             "audio_bit_rate":        ("-b:a", None),
         }
+        self.video_transcode_settings = {
+            "codec_name":       "video_codec",
+            "width":            "video_width",
+            "height":           "video_height",
+            "pix_fmt":          "video_pix_fmt",
+            "color_space":      "video_color_space",
+            "color_transfer":   "video_color_transfer",
+            "color_range":      "video_color_range",
+            "color_primaries":  "video_color_primaries",
+            "chroma_location":  "video_chroma_location",
+            "level":            "video_level",
+            "has_b_frames":     "video_has_b_frames",
+            "profile":          "video_profile",
+            "bit_rate":         "video_bit_rate",
+            "time_base":        "video_time_base",
+            "r_frame_rate":     "video_frame_rate",
+            "field_order":      "video_field_order"
+        }
+        self.audio_transcode_settings = {
+            "codec_name":       "audio_codec",
+            "sample_rate":      "audio_sample_rate",
+            "channels":         "audio_channels",
+            "channel_layout":   "audio_channel_layout",
+            "bit_rate":         "audio_bit_rate"
+        }
 
     def getFfprobeJsonFromFile(self, file_path):
         try:
@@ -55,7 +81,7 @@ class VideoProbe:
             return {}
         return json.loads(result.stdout)
 
-    def runFfmpeg(self, command):
+    def ffmpegRun(self, command):
         with subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -73,145 +99,117 @@ class VideoProbe:
 
         return process
 
-    def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None, run_command=False):
+    def checkOutputFileExtension(self, container_ext, output_file):
+        if output_file:
+            if os.path.exists(output_file):
+                output_file_no_ext, output_file_ext = os.path.splitext(output_file)
+                if output_file_ext.lstrip(".").lower() != container_ext:
+                    print(
+                        f"\nSpecified file extension {output_file_ext}"
+                        f" does not match container format of {container_ext}."
+                        f" Switching extension to {container_ext}"
+                    )
+                    output_file = f"{output_file_no_ext}.{container_ext}"
+        return output_file
+
+    def getTranscodeSettingsFromFile(
+        self, file_path, input_file, output_file, run_command=False
+    ):
         """
-        Uses ffprobe to extract codec and encoder information for the given media file.
+        Uses ffprobe to extract codec/encoder info for the given media file,
+        then generates a dictionary of transcode settings and prints a command line.
         """
         ffprobe_json = self.getFfprobeJsonFromFile(file_path)
-
         if not ffprobe_json:
             print(f"\nUnable to get metadata for {file_path}\n")
             return
 
-        data = {}
-
-        formatted_data = json.dumps(ffprobe_json, indent=4)
+        # Gather container info
         _, extension = os.path.splitext(file_path)
+        format_info  = ffprobe_json.get("format", {})
+        format_tags  = format_info.get("tags", {})
+        format_brate = format_info.get("bit_rate")  # fallback for video_bit_rate
+        container_ext = extension.lstrip(".").lower()
+        output_file = self.checkOutputFileExtension(container_ext, output_file)
 
-        search_extension = None
-        search_audio_codec = None
-        search_video_codec = None
+        # Initialize the main transcode_data with container info
+        transcode_data = {
+            "extension": container_ext,
+            "tags":      format_tags
+        }
 
         detected_video = None
         detected_audio = None
 
-        tags = ffprobe_json.get('format', {}).get('tags', None)
-        format_bitrate = ffprobe_json.get('format', {}).get('bit_rate', None)
-
-        for stream in ffprobe_json['streams']:
-            if stream.get('codec_type') == "audio":
-                search_audio_codec = stream.get('codec_name', None)
-                data.update({
-                    stream.get('index', None): {
-                        "codec_name": stream.get('codec_name', None),
-                        "codec_type": stream.get('codec_type', None),
-                        "sample_rate": stream.get('sample_rate', None),
-                        "channels": stream.get('channels', None),
-                        "channel_layout": stream.get('channel_layout', None),
-                        "bit_rate": stream.get('bit_rate', None)
-                    }
-                })
-            if stream.get('codec_type') == "video":
-                search_video_codec = stream.get('codec_name', None)
-                data.update({
-                    stream.get('index', None): {
-                        "codec_name": stream.get('codec_name', None),
-                        "codec_type": stream.get('codec_type', None),
-                        "width": stream.get('width', None),
-                        "height": stream.get('height', None),
-                        "pix_fmt": stream.get('pix_fmt', None),
-                        "color_space": stream.get('color_space', None),
-                        "color_transfer": stream.get('color_transfer', None),
-                        "color_range": stream.get('color_range', None),
-                        "color_primaries": stream.get('color_primaries', None),
-                        "chroma_location": stream.get('chroma_location', None),
-                        "level": stream.get('level', None),
-                        "has_b_frames": str(stream.get('has_b_frames', None)),
-                        "profile": stream.get('profile', None),
-                        "bit_rate": stream.get('bit_rate', None),
-                        "time_base": stream.get('time_base', None),
-                        "r_frame_rate": stream.get('r_frame_rate', None),
-                        "field_order": stream.get('field_order', None)
-                    }
-                })
-
-        search_extension = extension.replace('.', '').lower()
-
-        data.update({
-            "container": {
-                "extension": search_extension,
-                "tags": tags
-            }
-
-        })
-
-        formatted_data = json.dumps(data, indent=4)
-
-        transcode_data = {}
-
-        transcode_data.update({
-            "extension": data['container']['extension'],
-            "tags": data['container']['tags']
-        })
-
-        for stream, attributes in data.items():
-            if attributes.get('codec_type') == "video":
-                detected_video = self.compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
+        # Loop through streams once, update transcode_data
+        for stream in ffprobe_json.get("streams", []):
+            codec_type = stream.get("codec_type")
+            # Check if we support video codec
+            if codec_type == "video":
+                video_codec_name = stream.get("codec_name")
+                detected_video   = self.compatibility_matrix.getCodecAttributes(video_codec_name)
                 if detected_video:
-                    transcode_data.update({
-                        "video_codec": attributes.get('codec_name', None),
-                        "video_width": attributes.get('width', None),
-                        "video_height": attributes.get('height', None),
-                        "video_pix_fmt": attributes.get('pix_fmt', None),
-                        "video_color_space": attributes.get('color_space', None),
-                        "video_color_transfer": attributes.get('color_transfer', None),
-                        "video_color_range": attributes.get('color_range', None),
-                        "video_profile": (attributes.get('profile', "") or "").lower().replace(" ", ""),
-                        "video_color_primaries": attributes.get('color_primaries', None),
-                        "video_frame_rate": attributes.get('r_frame_rate', None),
-                        "video_bit_rate": attributes.get('bit_rate', None),
-                        "video_time_base": attributes.get('time_base', None),
-                        "video_chroma_location": attributes.get('chroma_location', None),
-                        "video_has_b_frames": str(attributes.get('has_b_frames', None)),
-                        "video_level": str(attributes.get('level', None)),
-                        "video_field_order": attributes.get('field_order', None)
-                    })
-                    if not transcode_data['video_bit_rate']:
-                        transcode_data['video_bit_rate'] = format_bitrate
-            if attributes.get('codec_type') == "audio":
-                detected_audio = self.compatibility_matrix.getCodecAttributes(attributes.get('codec_name', None))
-                if detected_audio:
-                    transcode_data.update({
-                        "audio_codec": attributes.get('codec_name', None),
-                        "audio_sample_rate": attributes.get('sample_rate', None),
-                        "audio_channels": attributes.get('channels', None),
-                        "audio_channel_layout": attributes.get('channel_layout', None),
-                        "audio_bit_rate": attributes.get('bit_rate', None)
-                    })
+                    # Merge fields from the ffprobe stream into transcode_data
+                    self.mergeVideoStreamIntoTranscodeData(stream, transcode_data, format_brate)
 
+            # Check if we support audio codec
+            elif codec_type == "audio":
+                audio_codec_name = stream.get("codec_name")
+                detected_audio   = self.compatibility_matrix.getCodecAttributes(audio_codec_name)
+                if detected_audio:
+                    self.mergeAudioStreamIntoTranscodeData(stream, transcode_data)
+
+        # If no streams are supported, bail
         if not detected_video and not detected_audio:
             print("Could not detect any video or audio settings")
             return
 
-        codec_settings = [detected_video, detected_audio]
-
+        # Show detected codecs and the final transcode data
         print("\nDetected Codecs:")
-        self.compatibility_matrix.jsonToTable(codec_settings)
+        self.compatibility_matrix.jsonToTable([detected_video, detected_audio])
 
         print("\nTranscode Settings:")
-        table_data = []
-        headers = ['Setting', 'Value']
-
         self.compatibility_matrix.jsonToTable(self.reformatJsonForTable(transcode_data))
 
-        ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
+        # Generate the FFmpeg command and (optionally) run it
+        ffmpeg_command = self.ffmpegGenerateTranscodeCommand(transcode_data, input_file, output_file)
+        # cmd_string     = " ".join(ffmpeg_command)
+        cmd_string     = " ".join(shlex.quote(arg) for arg in ffmpeg_command)
 
-        command_string = " ".join(ffmpeg_command)
-        print("\nffmpeg command line:")
-        print(f"\n{command_string}\n")
+        print("\nffmpeg command line:\n")
+        print(cmd_string, "\n")
 
-        if run_command is True:
-            result = self.runFfmpeg(ffmpeg_command)
+        if run_command:
+            self.ffmpegRun(ffmpeg_command)
+
+    def mergeVideoStreamIntoTranscodeData(self, stream, transcode_data, format_brate):
+        """
+        Extracts fields from a video stream via self.video_transcode_settings
+        and merges them into transcode_data.
+        """
+        for probe_key, transcode_key in self.video_transcode_settings.items():
+            value = stream.get(probe_key, None)
+            # Convert has_b_frames to string, if present
+            if probe_key == "has_b_frames" and value is not None:
+                value = str(value)
+            transcode_data[transcode_key] = value
+
+        # If there's no dedicated video_bit_rate, fallback to container bit_rate
+        if not transcode_data.get("video_bit_rate"):
+            transcode_data["video_bit_rate"] = format_brate
+
+        if transcode_data.get("video_profile"):
+            profile_str = transcode_data["video_profile"] or ""
+            transcode_data["video_profile"] = profile_str.lower().replace(" ", "")
+
+    def mergeAudioStreamIntoTranscodeData(self, stream, transcode_data):
+        """
+        Extracts fields from an audio stream via self.audio_transcode_settings
+        and merges them into transcode_data.
+        """
+        for probe_key, transcode_key in self.audio_transcode_settings.items():
+            value = stream.get(probe_key, None)
+            transcode_data[transcode_key] = value
 
     def checkInputFileInterlacing(self, input_file):
         input_file_interlaced = False
@@ -226,7 +224,7 @@ class VideoProbe:
                             input_file_interlaced = True
         return input_file_interlaced
 
-    def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
+    def ffmpegGenerateTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
         Converts a JSON dictionary into an FFmpeg command line.
         """
@@ -451,7 +449,7 @@ class VideoProbe:
             '--output-file', metavar='<OutputFile>', help="File path of file to output"
         )
         parser.add_argument(
-            '--run-command', action='store_true',
+            '--run', action='store_true',
             help='Start transcoding using ffmpeg'
         )
         compare_group = parser.add_argument_group(
@@ -489,6 +487,10 @@ class VideoProbe:
         return args
 
     def main(self):
+        if not self.compatibility_matrix.ffmpegCheckInstalled():
+            print("ffmpeg is not installed correctly")
+            sys.exit(1)
+
         args = self.configureCliArguments()
 
         input_file = None
@@ -501,15 +503,15 @@ class VideoProbe:
         if args.output_file:
             output_file = args.output_file
 
-        if args.run_command:
+        if args.run:
             run_command = True
 
         if args.probe_file:
             if os.path.exists(args.probe_file):
                 self.getTranscodeSettingsFromFile(
                     args.probe_file,
-                    input_file=input_file,
-                    output_file=output_file,
+                    input_file,
+                    output_file,
                     run_command=run_command
                 )
             else:
