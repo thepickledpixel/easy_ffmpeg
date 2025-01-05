@@ -1,11 +1,11 @@
-import subprocess
 import os
 import sys
 import json
 import argparse
-from tabulate import tabulate
+import subprocess
 import textwrap
 
+from tabulate import tabulate
 from deepdiff import DeepDiff
 from compatibility_matrix import CompatibilityMatrix
 
@@ -14,6 +14,29 @@ class VideoProbe:
         self.compatibility_matrix = CompatibilityMatrix()
         self.compare_diff = False
         self.compare_matches = False
+        self.video_map = {
+            "video_codec":           ("-c:v", None),
+            "video_pix_fmt":         ("-pix_fmt", None),
+            "video_color_space":     ("-colorspace", None),
+            "video_color_transfer":  ("-color_trc", None),
+            "video_color_range":     ("-color_range", None),
+            "video_color_primaries": ("-color_primaries", None),
+            "video_profile":         ("-profile:v", None),
+            "video_frame_rate":      ("-r", None),
+            "video_bit_rate":        ("-b:v", None),
+            "video_chroma_location": ("-chroma_sample_location", None),
+            "video_has_b_frames":    ("-bf", None),
+            "video_time_base":       ("-time_base", None),
+            "video_level":           ("-level:v", None),
+            "video_field_order":     ("-field_order", None),
+        }
+        self.audio_map = {
+            "audio_codec":           ("-c:a", None),
+            "audio_sample_rate":     ("-ar", None),
+            "audio_channels":        ("-ac", str),
+            "audio_channel_layout":  ("-channel_layout", None),
+            "audio_bit_rate":        ("-b:a", None),
+        }
 
     def getFfprobeJsonFromFile(self, file_path):
         try:
@@ -29,9 +52,26 @@ class VideoProbe:
                 command, capture_output=True, text=True, check=True
             )
         except Exception as e:
-            # print(e)
             return {}
         return json.loads(result.stdout)
+
+    def runFfmpeg(self, command):
+        with subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1
+        ) as process:
+
+            for line in process.stderr:
+                line = line.rstrip()
+                if line:
+                    print(line)
+
+            process.wait()
+
+        return process
 
     def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None, run_command=False):
         """
@@ -171,102 +211,88 @@ class VideoProbe:
         print(f"\n{command_string}\n")
 
         if run_command is True:
-            print(ffmpeg_command)
-            result = self.compatibility_matrix.ffmpegOutput(ffmpeg_command)
-            print(result.stdout)
+            result = self.runFfmpeg(ffmpeg_command)
+
+    def checkInputFileInterlacing(self, input_file):
+        input_file_interlaced = False
+        input_file_ffprobe_json = None
+        if input_file:
+            input_file_ffprobe_json = self.getFfprobeJsonFromFile(input_file)
+            if input_file_ffprobe_json:
+                for stream in input_file_ffprobe_json.get("streams", []):
+                    if stream.get("codec_type") == "video":
+                        # If field_order == progressive, set input_file_interlaced = True
+                        if stream.get("field_order", "").lower() == "progressive":
+                            input_file_interlaced = True
+        return input_file_interlaced
 
     def generateFfmpegTranscodeCommand(self, json_data, input_file=None, output_file=None):
         """
         Converts a JSON dictionary into an FFmpeg command line.
         """
-        # Base command
+        # Create the base command
         command = ["ffmpeg", "-y"]
 
+        # Replace input/output files with placeholders if none specified
         if not input_file:
             input_file = "[input_file]"
         if not output_file:
             output_file = f"[output_file.{json_data.get('extension', 'mp4')}]"
 
-        command += ["-i", f"'{input_file}'"]
+        command += ["-i", input_file]
 
-        input_file_ffprobe_json = None
-        if input_file:
-            input_file_ffprobe_json = self.getFfprobeJsonFromFile(input_file)
-            input_file_interlaced = False
-            if input_file_ffprobe_json:
-                for stream in input_file_ffprobe_json['streams']:
-                    if stream.get('codec_type') == "video":
-                        if stream.get('field_order', None).lower() == "progressive":
-                            input_file_interlaced = True
+        input_file_interlaced = self.checkInputFileInterlacing(input_file)
+        video_filter_parts = []
 
-        video_filter = ""
-        # Video settings
-        if json_data.get("video_codec"):
-            command += ["-c:v", json_data.get("video_codec")]
-        if json_data.get("video_width") and json_data.get("video_height"):
-            video_filter += f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"
-            # command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"]
-        if json_data.get("video_pix_fmt"):
-            command += ["-pix_fmt", json_data.get("video_pix_fmt")]
-        if json_data.get("video_color_space"):
-            command += ["-colorspace", json_data.get("video_color_space")]
-        if json_data.get("video_color_transfer"):
-            command += ["-color_trc", json_data.get("video_color_transfer")]
-        if json_data.get("video_color_range"):
-            command += ["-color_range", json_data.get("video_color_range")]
-        if json_data.get("video_color_primaries"):
-            command += ["-color_primaries", json_data.get("video_color_primaries")]
-        if json_data.get("video_profile"):
-            command += ["-profile:v", json_data.get("video_profile")]
-        if json_data.get("video_frame_rate"):
-            command += ["-r", json_data.get("video_frame_rate")]
-        if json_data.get("video_bit_rate"):
-            command += ["-b:v", json_data.get("video_bit_rate")]
-        if json_data.get("video_chroma_location"):
-            command += ["-chroma_sample_location", json_data.get("video_chroma_location")]
-        if json_data.get("video_has_b_frames"):
-            command += ["-bf", json_data.get("video_has_b_frames")]
-        if json_data.get("video_time_base"):
-            command += ["-time_base", json_data.get("video_time_base")]
-        if json_data.get("video_level"):
-            command += ["-level:v", json_data.get("video_level")]
-        if json_data.get("video_field_order"):
-            command += ["-field_order", json_data.get("video_field_order")]
+        # Handle scale if video_width/height exist
+        width = json_data.get("video_width")
+        height = json_data.get("video_height")
+        if width and height:
+            video_filter_parts.append(f"scale={width}:{height}")
 
+        # # Iterate through the video mapping
+        for json_key, (flag, cast_func) in self.video_map.items():
+            value = json_data.get(json_key)
+            if value is not None:
+                value_str = cast_func(value) if cast_func else str(value)
+                if value_str.strip():
+                    command += [flag, value_str]
+
+        # If input_file_interlaced == False, but the desired field_order is progressive:
+        # apply the yadif filter to deinterlace
+        video_field_order = json_data.get("video_field_order")
         if input_file_interlaced is False:
-            if json_data.get("video_field_order") == "progressive":
+            if video_field_order == "progressive":
                 print("Input file is Interlaced, and needs de-interlacing")
-                if video_filter:
-                    video_filter += ","
-                video_filter += "yadif=mode=1"
+                video_filter_parts.append("yadif=mode=1")
+
+        # If input_file_interlaced == True, but field_order != progressive
+        # we need to re-interlace the file using +ildct+ilme flags
         if input_file_interlaced is True:
-            if json_data.get("video_field_order") != "progressive":
+            if video_field_order != "progressive":
                 print("Input file is Progressive, and needs interlacing")
                 command += ["-flags", "+ildct+ilme"]
 
-        if video_filter:
-            command += ["-vf", video_filter]
+        # If we have any video filters join them here
+        if video_filter_parts:
+            command += ["-vf", ",".join(video_filter_parts)]
 
-        # Audio settings
-        if json_data.get("audio_codec"):
-            command += ["-c:a", json_data.get("audio_codec")]
-        if json_data.get("audio_sample_rate"):
-            command += ["-ar", json_data.get("audio_sample_rate")]
-        if json_data.get("audio_channels"):
-            command += ["-ac", str(json_data.get("audio_channels"))]
-        if json_data.get("audio_channel_layout"):
-            command += ["-channel_layout", json_data.get("audio_channel_layout")]
-        if json_data.get("audio_bit_rate"):
-            command += ["-b:a", json_data.get("audio_bit_rate")]
+        # Iterate through audio mapping
+        for json_key, (flag, cast_func) in self.audio_map.items():
+            value = json_data.get(json_key)
+            if value is not None:
+                value_str = cast_func(value) if cast_func else str(value)
+                if value_str.strip():
+                    command += [flag, value_str]
 
-        if json_data.get("tags"):
-            tags = json_data.get("tags")
-            for key, value in tags.items():
-                command += ["-metadata", f"'{key}={value}'"]
+        # Add the metadata tags here
+        tags = json_data.get("tags", {})
+        for key, value in tags.items():
+            command += ["-metadata", f"{key}={value}"]
 
-        command.append(f"'{output_file}'")
+        # Add the output file
+        command += [output_file]
 
-        # return " ".join(command)
         return command
 
     def reformatJsonForTable(self, json_data):
@@ -386,7 +412,8 @@ class VideoProbe:
                 matches.append({
                     "Section": parentKey,
                     "Setting": fullKey,
-                    "Value": value1
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
                 })
 
     def compareVideoJsonMetadata(
