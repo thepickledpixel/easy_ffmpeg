@@ -12,6 +12,8 @@ from compatibility_matrix import CompatibilityMatrix
 class VideoProbe:
     def __init__(self):
         self.compatibility_matrix = CompatibilityMatrix()
+        self.compare_diff = False
+        self.compare_matches = False
 
     def getFfprobeJsonFromFile(self, file_path):
         try:
@@ -31,21 +33,12 @@ class VideoProbe:
             return {}
         return json.loads(result.stdout)
 
-    def wrapText(self, items, width=20):
-        """
-        Wrap a list or string into multiple lines.
-        """
-        if isinstance(items, list):
-            return "\n".join(textwrap.wrap(", ".join(items), width=width))
-        elif isinstance(items, str):
-            return "\n".join(textwrap.wrap(items, width=width))
-        return items
-
     def getTranscodeSettingsFromFile(self, file_path, input_file=None, output_file=None):
         """
         Uses ffprobe to extract codec and encoder information for the given media file.
         """
         ffprobe_json = self.getFfprobeJsonFromFile(file_path)
+
         if not ffprobe_json:
             print(f"\nUnable to get metadata for {file_path}\n")
             return
@@ -64,6 +57,8 @@ class VideoProbe:
 
         tags = ffprobe_json.get('format', {}).get('tags', None)
         format_bitrate = ffprobe_json.get('format', {}).get('bit_rate', None)
+
+
 
         for stream in ffprobe_json['streams']:
             if stream.get('codec_type') == "audio":
@@ -114,8 +109,6 @@ class VideoProbe:
 
         formatted_data = json.dumps(data, indent=4)
 
-        # print(formatted_data)
-
         transcode_data = {}
 
         transcode_data.update({
@@ -162,34 +155,16 @@ class VideoProbe:
             print("Could not detect any video or audio settings")
             return
 
-        table_data = []
-        headers = [
-            "ID", "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
-        ]
-
         codec_settings = [detected_video, detected_audio]
 
-        for row in codec_settings:
-            if row:
-                table_data.append([
-                    self.wrapText(row['id']),
-                    self.wrapText(row['codec_name']),
-                    self.wrapText(row['long_name']),
-                    self.wrapText(row['type']),
-                    self.wrapText(row['video_formats']),
-                    self.wrapText(row['audio_formats']),
-                ])
-
         print("\nDetected Codecs:")
-        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+        self.compatibility_matrix.jsonToTable(codec_settings)
 
         print("\nTranscode Settings:")
         table_data = []
         headers = ['Setting', 'Value']
-        for item, value in transcode_data.items():
-            table_data.append([self.wrapText(item), self.formatJson(self.wrapText(value))])
 
-        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+        self.compatibility_matrix.jsonToTable(self.reformatJsonForTable(transcode_data))
 
         ffmpeg_command = self.generateFfmpegTranscodeCommand(transcode_data, input_file, output_file)
 
@@ -210,11 +185,23 @@ class VideoProbe:
 
         command += ["-i", f"'{input_file}'"]
 
+        input_file_ffprobe_json = None
+        if input_file:
+            input_file_ffprobe_json = self.getFfprobeJsonFromFile(input_file)
+            input_file_interlaced = False
+            if input_file_ffprobe_json:
+                for stream in input_file_ffprobe_json['streams']:
+                    if stream.get('codec_type') == "video":
+                        if stream.get('field_order', None).lower() == "progressive":
+                            input_file_interlaced = True
+
+        video_filter = ""
         # Video settings
         if json_data.get("video_codec"):
             command += ["-c:v", json_data.get("video_codec")]
         if json_data.get("video_width") and json_data.get("video_height"):
-            command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"]
+            video_filter += f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"
+            # command += ["-vf", f"scale={json_data.get('video_width')}:{json_data.get('video_height')}"]
         if json_data.get("video_pix_fmt"):
             command += ["-pix_fmt", json_data.get("video_pix_fmt")]
         if json_data.get("video_color_space"):
@@ -242,6 +229,20 @@ class VideoProbe:
         if json_data.get("video_field_order"):
             command += ["-field_order", json_data.get("video_field_order")]
 
+        if input_file_interlaced is False:
+            if json_data.get("video_field_order") == "progressive":
+                print("Input file is Interlaced, and needs de-interlacing")
+                if video_filter:
+                    video_filter += ","
+                video_filter += "yadif=mode=1"
+        if input_file_interlaced is True:
+            if json_data.get("video_field_order") != "progressive":
+                print("Input file is Progressive, and needs interlacing")
+                command += ["-flags", "+ildct+ilme"]
+
+        if video_filter:
+            command += ["-vf", video_filter]
+
         # Audio settings
         if json_data.get("audio_codec"):
             command += ["-c:a", json_data.get("audio_codec")]
@@ -263,52 +264,125 @@ class VideoProbe:
 
         return " ".join(command)
 
-    def formatJson(self, value, indent=4):
+    def reformatJsonForTable(self, json_data):
         """
-        Formats a JSON-like object with proper indentation.
+        Reformats a JSON dictionary into a list of dictionaries
+        suitable for displaying in a table with 'Setting' and 'Value'.
         """
-        if isinstance(value, (dict, list)):
-            return json.dumps(value, indent=indent)
-        return str(value)
+        flattened_data = self.flattenDict(json_data)
+        return self.convertFlattenedDataToTable(flattened_data)
 
-    def generateTabulatedDiff(self, diff, column_width=50, json_indent=4):
+    def flattenDict(self, json_data, parent_key=""):
         """
-        Generates a clean, tabulated representation of JSON differences with formatted JSON.
+        Flattens nested dictionaries into a single-level dictionary with dot-separated keys.
         """
-        table_data = []
+        items = []
+        for key, value in json_data.items():
+            new_key = f"{parent_key}.{key}" if parent_key else key
+            if isinstance(value, dict):
+                items.extend(self.flattenDict(value, new_key).items())
+            else:
+                items.append((new_key, value))
+        return dict(items)
 
-        if "values_changed" in diff:
-            for key, change in diff["values_changed"].items():
-                table_data.append([
-                    key,
-                    self.formatJson(change["old_value"], indent=json_indent),
-                    self.formatJson(change["new_value"], indent=json_indent)
-                ])
+    def convertFlattenedDataToTable(self, flattened_data):
+        """
+        Converts a flattened dictionary into a list of dictionaries for table display.
+        """
+        reformatted = []
+        for key, value in flattened_data.items():
+            reformatted.append({"setting": key, "value": value})
+        return reformatted
 
-        if "iterable_item_removed" in diff:
-            for key, removed in diff["iterable_item_removed"].items():
-                table_data.append([
-                    key,
-                    self.formatJson(removed, indent=json_indent),
-                    "Removed"
-                ])
+    def compareJsonBlobs(self, json1, json2, matches=None, diff=None):
+        """
+        Compares two JSON objects and displays two tables:
+        1. Differences between the objects.
+        2. Matches (keys and values that are the same in both objects).
+        """
+        differences, matches = self.getJsonComparisons(json1, json2)
 
-        if "iterable_item_added" in diff:
-            for key, added in diff["iterable_item_added"].items():
-                table_data.append([
-                    key,
-                    "Added",
-                    self.formatJson(added, indent=json_indent)
-                ])
+        if self.compare_diff is True:
+            print("\nDifferences:")
+            if differences:
+                self.compatibility_matrix.jsonToTable(differences)
+            else:
+                print("No differences found!")
 
-        table = tabulate(
-            table_data,
-            headers=["Path", "Old Value", "New Value"],
-            tablefmt="fancy_grid",
-            numalign="left",
-            stralign="left",
-        )
-        return table
+        if self.compare_matches is True:
+            print("\nMatches:")
+            if matches:
+                self.compatibility_matrix.jsonToTable(matches)
+            else:
+                print("No matches found!")
+
+    def getJsonComparisons(self, json1, json2):
+        """
+        Recursively compares two JSON objects and returns two lists:
+        1. Differences (keys/values that differ).
+        2. Matches (keys/values that are identical).
+        """
+        differences = []
+        matches = []
+        self.compareDicts(json1, json2, differences, matches)
+        return differences, matches
+
+    def compareDicts(self, dict1, dict2, differences, matches, parentKey=""):
+        """
+        Recursively compares two dictionaries and appends differences and matches.
+        Handles nested dictionaries and lists.
+        """
+        allKeys = set(dict1.keys()).union(set(dict2.keys()))
+        for key in allKeys:
+            fullKey = f"{parentKey}.{key}" if parentKey else key
+            value1 = dict1.get(key)
+            value2 = dict2.get(key)
+
+            if isinstance(value1, dict) and isinstance(value2, dict):
+                self.compareDicts(value1, value2, differences, matches, fullKey)
+            elif isinstance(value1, list) and isinstance(value2, list):
+                self.compareLists(value1, value2, differences, matches, fullKey)
+            elif value1 != value2:
+                differences.append({
+                    "Section": parentKey,
+                    "Setting": fullKey,
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
+                })
+            else:
+                matches.append({
+                    "Section": parentKey,
+                    "Setting": fullKey,
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
+                })
+
+    def compareLists(self, list1, list2, differences, matches, parentKey=""):
+        """
+        Compares two lists and appends differences and matches.
+        Handles lists of dictionaries by comparing them recursively.
+        """
+        maxLength = max(len(list1), len(list2))
+        for i in range(maxLength):
+            value1 = list1[i] if i < len(list1) else None
+            value2 = list2[i] if i < len(list2) else None
+            fullKey = f"{parentKey}[{i}]"
+
+            if isinstance(value1, dict) and isinstance(value2, dict):
+                self.compareDicts(value1, value2, differences, matches, fullKey)
+            elif value1 != value2:
+                differences.append({
+                    "Section": parentKey,
+                    "Setting": fullKey,
+                    "Value in JSON1": value1,
+                    "Value in JSON2": value2
+                })
+            else:
+                matches.append({
+                    "Section": parentKey,
+                    "Setting": fullKey,
+                    "Value": value1
+                })
 
     def compareVideoJsonMetadata(
         self, source, dest, column_width=50, json_indent=4
@@ -322,11 +396,7 @@ class VideoProbe:
             print("Could not get file metadata")
             return {}
 
-        diff = DeepDiff(source, dest, ignore_order=True)
-        diff_table = self.generateTabulatedDiff(
-            diff, column_width=column_width, json_indent=json_indent
-        )
-        print(diff_table)
+        self.compareJsonBlobs(source, dest)
 
     def configureCliArguments(self):
         """
@@ -364,6 +434,14 @@ class VideoProbe:
             '--dest', metavar='<DestFile>',
             help='Path of dest file'
         )
+        compare_group.add_argument(
+            '--diff', action='store_true',
+            help='Display differences between metadata'
+        )
+        compare_group.add_argument(
+            '--matches', action='store_true',
+            help='Display matches between metadata'
+        )
 
         args = parser.parse_args()
         if args.probe_file is None and not args.compare:
@@ -396,6 +474,11 @@ class VideoProbe:
             else:
                 print(f"\nFile does not exists: {args.probe_file}\n")
                 sys.exit(1)
+
+        if args.diff:
+            self.compare_diff = True
+        if args.matches:
+            self.compare_matches = True
 
         if args.compare and (args.source or args.dest):
             self.compareVideoJsonMetadata(args.source, args.dest)

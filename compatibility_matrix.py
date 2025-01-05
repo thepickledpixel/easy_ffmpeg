@@ -133,8 +133,6 @@ class CompatibilityMatrix:
         Returns a list of export file extensions which are compatible with the
         Encoder
         """
-        # file_extensions = list(enc.extensions) if enc.extensions else []
-        # file_extensions.sort()
         file_extensions = [ext.lower() for ext in enc.extensions] if enc.extensions else []
         file_extensions.sort()
         return file_extensions
@@ -330,10 +328,23 @@ class CompatibilityMatrix:
         Wrap a list or string into multiple lines.
         """
         if isinstance(items, list):
-            return "\n".join(textwrap.wrap(", ".join(items), width=width))
+            # Convert all items to strings, regardless of type
+            string_items = [str(item) if not isinstance(item, dict) else str(item) for item in items]
+            return "\n".join(textwrap.wrap(", ".join(string_items), width=width))
         elif isinstance(items, str):
             return "\n".join(textwrap.wrap(items, width=width))
-        return items
+        elif isinstance(items, dict):
+            # If it's a dictionary, convert it to a string
+            return "\n".join(textwrap.wrap(str(items), width=width))
+        return str(items)
+
+    def formatJson(self, value, indent=4):
+        """
+        Formats a JSON-like object with proper indentation.
+        """
+        if isinstance(value, (dict, list)):
+            return json.dumps(value, indent=indent)
+        return str(value)
 
     def getEncoderAttributes(self, encoder_name):
         encoder = self.getEncoder(encoder_name)
@@ -394,6 +405,27 @@ class CompatibilityMatrix:
             formatted_matrix = json.dumps(self.encoder_attributes_json, indent=4)
             print(formatted_matrix)
 
+    def jsonToTable(self, json_data):
+        """
+        Converts JSON data into a tabulated table with wrapped text.
+        Automatically infers headers from the JSON keys.
+        """
+        if not json_data:
+            print("No data provided!")
+            return
+
+        if isinstance(json_data, dict):
+            json_data = [json_data]
+
+        headers = list(json_data[0].keys())
+
+        table_data = []
+        for item in json_data:
+            row = [self.formatJson(self.wrapText(value)) for value in item.values()]
+            table_data.append(row)
+
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+
     def displayEncoderAttributes(self, encoder_list):
         """
         Display Encoder attributes
@@ -402,54 +434,32 @@ class CompatibilityMatrix:
             return
 
         table_data = []
-        headers = [
-            "Encoder Name", "Long Name", "Muxers", "Options",
-            "File Extensions", "Video Codecs", "Audio Codecs"
-        ]
 
         for encoder_name in encoder_list:
             enc_attributes = self.getEncoderAttributes(encoder_name)
             if enc_attributes:
-                table_data.append([
-                    encoder_name,
-                    self.wrapText(enc_attributes['long_name']),
-                    self.wrapText(enc_attributes['muxers']),
-                    self.wrapText(enc_attributes['options']),
-                    self.wrapText(enc_attributes['file_extensions']),
-                    self.wrapText(enc_attributes['video_codecs']),
-                    self.wrapText(enc_attributes['audio_codecs']),
-                ])
+                table_data.append(enc_attributes)
             else:
                 print(f"Could not find attributes for: {encoder_name}")
 
-        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+        self.jsonToTable(table_data)
 
     def displayCodecAttributes(self, codec_list):
         """
         Display codec attributes
         """
         table_data = []
-        headers = [
-            "ID", "Codec Name", "Long Name", "Type", "Video Formats", "Audio Formats"
-        ]
         valid_codecs = []
 
         for codec_name in codec_list:
             cdc_attributes = self.getCodecAttributes(codec_name)
             if cdc_attributes:
-                table_data.append([
-                    self.wrapText(cdc_attributes['id']),
-                    self.wrapText(cdc_attributes['codec_name']),
-                    self.wrapText(cdc_attributes['long_name']),
-                    self.wrapText(cdc_attributes['type']),
-                    self.wrapText(cdc_attributes['video_formats']),
-                    self.wrapText(cdc_attributes['audio_formats']),
-                ])
+                table_data.append(cdc_attributes)
                 valid_codecs.append(codec_name)
             else:
                 print(f"Could not find attributes for: {codec_name}")
 
-        print(tabulate(table_data, headers=headers, tablefmt="grid"))
+        self.jsonToTable(table_data)
         return valid_codecs
 
     def searchExtensionsAttributesJson(
