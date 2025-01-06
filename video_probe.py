@@ -225,6 +225,13 @@ class VideoProbe:
                 transcode_data["video_profile"] = profile_code
         return transcode_data
 
+    def checkAS11Profile(self, transcode_data):
+        if transcode_data.get("video_codec") == "mpeg2video":
+            transcode_data["video_profile"] = None
+            transcode_data["video_level"] = None
+            transcode_data["video_color_transfer"] = None
+        return transcode_data
+
     def snapDnxBitrate(self, input_bitrate):
         """
         Given an input_bitrate (in Mbps), return the closest valid DNxHD bitrate.
@@ -258,6 +265,7 @@ class VideoProbe:
 
         transcode_data = self.checkDnxBitrate(transcode_data)
         transcode_data = self.checkProResProfile(transcode_data, encoder)
+        transcode_data = self.checkAS11Profile(transcode_data)
 
     def mergeAudioStreamIntoTranscodeData(self, stream, transcode_data):
         """
