@@ -68,6 +68,14 @@ class VideoProbe:
             120, 145, 175, 180, 185, 220, 240, 290, 350, 365,
             390, 440, 730, 880
         ]
+        self.prores_profile_map = {
+            "Apple ProRes 422 Proxy": "0",
+            "Apple ProRes 422 LT":    "1",
+            "Apple ProRes 422":       "2",
+            "Apple ProRes 422 HQ":    "3",
+            "Apple ProRes 4444":      "4",
+            "Apple ProRes 4444 XQ":   "5"
+        }
 
     def ffprobeJsonFromFile(self, file_path):
         try:
@@ -116,6 +124,14 @@ class VideoProbe:
                 output_file = f"{output_file_no_ext}.{container_ext}"
         return output_file
 
+    def getVideoTranscoder(self, stream):
+        encoder = None
+        tags = stream.get('tags', None)
+        if tags:
+            print(tags)
+            encoder = tags.get('encoder', None)
+        return encoder
+
     def getTranscodeSettingsFromFile(
         self, file_path, input_file, output_file, run_command=False
     ):
@@ -148,12 +164,13 @@ class VideoProbe:
 
             if codec_type == "video":
                 video_codec_name = stream.get("codec_name")
+                encoder = self.getVideoTranscoder(stream)
                 detected_video   = self.compatibility_matrix.getCodecAttributes(
                     video_codec_name
                 )
                 if detected_video:
                     self.mergeVideoStreamIntoTranscodeData(
-                        stream, transcode_data, format_brate
+                        stream, transcode_data, format_brate, encoder
                     )
 
             elif codec_type == "audio":
@@ -201,6 +218,13 @@ class VideoProbe:
             print(f"Snapped DNxHD bitrate from {original_rate} to {new_rate}")
         return transcode_data
 
+    def checkProResProfile(self, transcode_data, encoder):
+        if transcode_data.get("video_codec") == "prores":
+            profile_code = self.prores_profile_map.get(encoder)
+            if profile_code:
+                transcode_data["video_profile"] = profile_code
+        return transcode_data
+
     def snapDnxBitrate(self, input_bitrate):
         """
         Given an input_bitrate (in Mbps), return the closest valid DNxHD bitrate.
@@ -212,7 +236,7 @@ class VideoProbe:
         )
         return f"{closest_bitrate}M"
 
-    def mergeVideoStreamIntoTranscodeData(self, stream, transcode_data, format_brate):
+    def mergeVideoStreamIntoTranscodeData(self, stream, transcode_data, format_brate, encoder):
         """
         Extracts fields from a video stream via self.video_transcode_settings
         and merges them into transcode_data.
@@ -228,11 +252,12 @@ class VideoProbe:
         if not transcode_data.get("video_bit_rate"):
             transcode_data["video_bit_rate"] = format_brate
 
-        transcode_data = self.checkDnxBitrate(transcode_data)
-
         if transcode_data.get("video_profile"):
             profile_str = transcode_data["video_profile"] or ""
             transcode_data["video_profile"] = profile_str.lower().replace(" ", "")
+
+        transcode_data = self.checkDnxBitrate(transcode_data)
+        transcode_data = self.checkProResProfile(transcode_data, encoder)
 
     def mergeAudioStreamIntoTranscodeData(self, stream, transcode_data):
         """
@@ -459,14 +484,11 @@ class VideoProbe:
         Parse command line arguments
         """
         parser = argparse.ArgumentParser(
-            description=f"FF Prober"
+            description=f"Video Probe"
         )
         parser.add_argument(
             'probe_file', metavar='<ProbeFile>', nargs='?',
-            help="File path of file to inspect (positional argument)"
-        )
-        parser.add_argument(
-            '--probe-file', metavar='<ProbeFile>', help="File path of file to inspect"
+            help="File path of file to inspect"
         )
         parser.add_argument(
             '--input-file', metavar='<InputFile>', help="File path of file to convert"
