@@ -15,6 +15,8 @@ class VideoProbe:
         self.compatibility_matrix = CompatibilityMatrix()
         self.compare_diff = False
         self.compare_matches = False
+
+        # Mapping betwen video settings and ffmpeg video flags
         self.video_map = {
             "video_codec":           ("-c:v", None),
             "video_pix_fmt":         ("-pix_fmt", None),
@@ -31,6 +33,8 @@ class VideoProbe:
             "video_level":           ("-level:v", None),
             "video_field_order":     ("-field_order", None),
         }
+
+        # Mapping betwen audio settings and ffmpeg audio flags
         self.audio_map = {
             "audio_codec":           ("-c:a", None),
             "audio_sample_rate":     ("-ar", None),
@@ -38,6 +42,8 @@ class VideoProbe:
             "audio_channel_layout":  ("-channel_layout", None),
             "audio_bit_rate":        ("-b:a", None),
         }
+
+        # Mapping between video settings and ffprobe json keys for video
         self.video_transcode_settings = {
             "codec_name":       "video_codec",
             "width":            "video_width",
@@ -56,6 +62,8 @@ class VideoProbe:
             "r_frame_rate":     "video_frame_rate",
             "field_order":      "video_field_order"
         }
+
+        # Mapping between video settings and ffprobe json keys for audio
         self.audio_transcode_settings = {
             "codec_name":       "audio_codec",
             "sample_rate":      "audio_sample_rate",
@@ -63,11 +71,15 @@ class VideoProbe:
             "channel_layout":   "audio_channel_layout",
             "bit_rate":         "audio_bit_rate"
         }
+
+        # Valid bitrates that you can encodee DNX video with
         self.valid_dnx_bitrates = [
             36, 42, 45, 60, 63, 75, 80, 84, 90, 100, 110, 115,
             120, 145, 175, 180, 185, 220, 240, 290, 350, 365,
             390, 440, 730, 880
         ]
+
+        # Valid ProRes video profiles
         self.prores_profile_map = {
             "Apple ProRes 422 Proxy": "0",
             "Apple ProRes 422 LT":    "1",
@@ -77,7 +89,11 @@ class VideoProbe:
             "Apple ProRes 4444 XQ":   "5"
         }
 
-    def ffprobeJsonFromFile(self, file_path):
+    def ffprobeJsonFromFile(self, file_path) -> dict:
+        """
+        Extract verbose JSON data using ffmpeg from a specified file path.
+        This seperates the json into streams, with 0 normally reserved for video.
+        """
         try:
             command = [
                 "ffprobe",
@@ -95,6 +111,10 @@ class VideoProbe:
         return json.loads(result.stdout)
 
     def ffmpegRun(self, command):
+        """
+        Run an ffmpeg command using subprocess, and display the output of
+        ffmpegs stderr output in realtime as it transcodes.
+        """
         with subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -107,12 +127,15 @@ class VideoProbe:
                 line = line.rstrip()
                 if line:
                     print(line)
-
             process.wait()
-
         return process
 
-    def checkOutputFileExtension(self, container_ext, output_file):
+    def checkOutputFileExtension(self, container_ext, output_file) -> str:
+        """
+        Check an output file extension, if it does not match the extension
+        compatibile with the container, the extension is swapped to
+        the correct one.
+        """
         if output_file:
             output_file_no_ext, output_file_ext = os.path.splitext(output_file)
             if output_file_ext.lstrip(".").lower() != container_ext:
@@ -125,6 +148,9 @@ class VideoProbe:
         return output_file
 
     def getVideoTranscoder(self, stream):
+        """
+        Get the name of the encoder from the stream metadata
+        """
         encoder = None
         tags = stream.get('tags', None)
         if tags:
@@ -136,8 +162,9 @@ class VideoProbe:
         self, file_path, input_file, output_file, run_command=False
     ):
         """
-        Uses ffprobe to extract codec/encoder info for the given media file,
-        then generates a dictionary of transcode settings and prints a command line.
+        Uses ffprobe to extract codec info for the given media file,
+        then generates a dictionary of transcode settings and conver these into
+        a valid ffmpeg command
         """
         ffprobe_json = self.ffprobeJsonFromFile(file_path)
         if not ffprobe_json:
@@ -210,31 +237,42 @@ class VideoProbe:
         if run_command:
             self.ffmpegRun(ffmpeg_command)
 
-    def checkDnxBitrate(self, transcode_data):
+    def checkDnxBitrate(self, transcode_data) -> dict:
+        """
+        Check the bitrate for the file you are encoding, if the codec is dnxhd
+        then the bitrate for the encoded file needs to be snapped to a bitrate
+        specified in self.valid_dnx_bitrates.
+        """
         if transcode_data.get("video_codec") == "dnxhd":
             original_rate = transcode_data.get("video_bit_rate", 0)
             new_rate = self.snapDnxBitrate(original_rate)
             transcode_data["video_bit_rate"] = new_rate
-            print(f"Snapped DNxHD bitrate from {original_rate} to {new_rate}")
-        return transcode_data
+            print(f"\nSnapped DNxHD bitrate from {original_rate} to {new_rate}\n")
 
-    def checkProResProfile(self, transcode_data, encoder):
+    def checkProResProfile(self, transcode_data, encoder) -> dict:
+        """
+        The prores format, I.e 422, LT or 4444 is switched by video_profile.
+        This checks the encoder from the transcode_data dictionary and matches
+        this against the correct numeric value from self.prores_profile_map.
+        """
         if transcode_data.get("video_codec") == "prores":
             profile_code = self.prores_profile_map.get(encoder)
             if profile_code:
                 transcode_data["video_profile"] = profile_code
-        return transcode_data
 
-    def checkAS11Profile(self, transcode_data):
+    def checkAS11Profile(self, transcode_data) -> dict:
+        """
+        AS-11 mpeg2video ffmpeg encoder does not support the video_profile,
+        video_level or colour_trc flags, so these must be set to None
+        """
         if transcode_data.get("video_codec") == "mpeg2video":
             transcode_data["video_profile"] = None
             transcode_data["video_level"] = None
             transcode_data["video_color_transfer"] = None
-        return transcode_data
 
-    def snapDnxBitrate(self, input_bitrate):
+    def snapDnxBitrate(self, input_bitrate) -> str:
         """
-        Given an input_bitrate (in Mbps), return the closest valid DNxHD bitrate.
+        Take an input_bitrate (in Mbps) and return the closest DNxHD bitrate.
         """
         input_bitrate = float(input_bitrate) / 1_000_000.0
         closest_bitrate = min(
@@ -243,7 +281,9 @@ class VideoProbe:
         )
         return f"{closest_bitrate}M"
 
-    def mergeVideoStreamIntoTranscodeData(self, stream, transcode_data, format_brate, encoder):
+    def mergeVideoStreamIntoTranscodeData(
+        self, stream, transcode_data, format_brate, encoder
+    ):
         """
         Extracts fields from a video stream via self.video_transcode_settings
         and merges them into transcode_data.
@@ -263,9 +303,9 @@ class VideoProbe:
             profile_str = transcode_data["video_profile"] or ""
             transcode_data["video_profile"] = profile_str.lower().replace(" ", "")
 
-        transcode_data = self.checkDnxBitrate(transcode_data)
-        transcode_data = self.checkProResProfile(transcode_data, encoder)
-        transcode_data = self.checkAS11Profile(transcode_data)
+        self.checkDnxBitrate(transcode_data)
+        self.checkProResProfile(transcode_data, encoder)
+        self.checkAS11Profile(transcode_data)
 
     def mergeAudioStreamIntoTranscodeData(self, stream, transcode_data):
         """
@@ -276,7 +316,10 @@ class VideoProbe:
             value = stream.get(probe_key, None)
             transcode_data[transcode_key] = value
 
-    def checkInputFileInterlacing(self, input_file):
+    def checkInputFileInterlacing(self, input_file) -> bool:
+        """
+        Check an input file to see if it's progressive or interlaced.
+        """
         input_file_interlaced = False
         input_file_ffprobe_json = None
         if input_file:
@@ -284,12 +327,13 @@ class VideoProbe:
             if input_file_ffprobe_json:
                 for stream in input_file_ffprobe_json.get("streams", []):
                     if stream.get("codec_type") == "video":
-                        # If field_order == progressive, set input_file_interlaced = True
                         if stream.get("field_order", "").lower() == "progressive":
                             input_file_interlaced = True
         return input_file_interlaced
 
-    def ffmpegGenerateTranscodeCommand(self, json_data, input_file=None, output_file=None):
+    def ffmpegGenerateTranscodeCommand(
+        self, json_data, input_file=None, output_file=None
+    ) -> list:
         """
         Converts a JSON dictionary into an FFmpeg command line.
         """
@@ -321,8 +365,8 @@ class VideoProbe:
                 if value_str.strip():
                     command += [flag, value_str]
 
-        # If input_file_interlaced == False, but the desired field_order is progressive:
-        # apply the yadif filter to deinterlace
+        # If input_file_interlaced == False, but the desired field_order is
+        # progressive apply the yadif filter to deinterlace
         video_field_order = json_data.get("video_field_order")
         if input_file_interlaced is False:
             if video_field_order == "progressive":
@@ -360,15 +404,15 @@ class VideoProbe:
 
     def reformatJsonForTable(self, json_data):
         """
-        Reformats a JSON dictionary into a list of dictionaries
-        suitable for displaying in a table with 'Setting' and 'Value'.
+        Reformats a JSON dictionary into a list of dictionaries.
         """
         flattened_data = self.flattenDict(json_data)
         return self.convertFlattenedDataToTable(flattened_data)
 
     def flattenDict(self, json_data, parent_key=""):
         """
-        Flattens nested dictionaries into a single-level dictionary with dot-separated keys.
+        Flattens nested dictionaries into a single-level dictionary with
+        dot-separated keys.
         """
         items = []
         for key, value in json_data.items():
@@ -381,7 +425,8 @@ class VideoProbe:
 
     def convertFlattenedDataToTable(self, flattened_data):
         """
-        Converts a flattened dictionary into a list of dictionaries for table display.
+        Converts a flattened dictionary into a list of dictionaries for
+        table display.
         """
         reformatted = []
         for key, value in flattened_data.items():
@@ -423,8 +468,9 @@ class VideoProbe:
 
     def compareItems(self, value1, value2, differences, matches, parentKey=""):
         """
-        Main comparison method that checks whether values are dict, list, or scalars.
-        Delegates to compareDicts / compareLists if needed, otherwise compares directly.
+        Main comparison method that checks whether values are dict, list,
+        or scalars. Delegates to compareDicts / compareLists if needed,
+        otherwise compares directly.
         """
         if isinstance(value1, dict) and isinstance(value2, dict):
             self.compareDicts(value1, value2, differences, matches, parentKey)
@@ -457,8 +503,9 @@ class VideoProbe:
             fullKey = f"{parentKey}.{key}" if parentKey else key
             val1 = dict1.get(key)
             val2 = dict2.get(key)
-            # Compare the items under this key
-            self.compareItems(val1, val2, differences, matches, parentKey=fullKey)
+            self.compareItems(
+                val1, val2, differences, matches, parentKey=fullKey
+            )
 
     def compareLists(self, list1, list2, differences, matches, parentKey=""):
         """
@@ -470,12 +517,18 @@ class VideoProbe:
             val1 = list1[i] if i < len(list1) else None
             val2 = list2[i] if i < len(list2) else None
             fullKey = f"{parentKey}[{i}]"
-            # Compare the items at this index
-            self.compareItems(val1, val2, differences, matches, parentKey=fullKey)
+            self.compareItems(
+                val1, val2, differences, matches, parentKey=fullKey
+            )
 
     def compareVideoJsonMetadata(
         self, source, dest, column_width=50, json_indent=4
     ):
+        """
+        Extract the metadata from a source and destination file, and run a
+        comparison to show the similarities or differences between the two
+        sets of metadata.
+        """
         if isinstance(source, str):
             source = self.ffprobeJsonFromFile(source)
         if isinstance(dest, str):
@@ -499,10 +552,14 @@ class VideoProbe:
             help="File path of file to inspect"
         )
         parser.add_argument(
-            '--input-file', metavar='<InputFile>', help="File path of file to convert"
+            '--input-file',
+            metavar='<InputFile>',
+            help="File path of file to convert"
         )
         parser.add_argument(
-            '--output-file', metavar='<OutputFile>', help="File path of file to output"
+            '--output-file',
+            metavar='<OutputFile>',
+            help="File path of file to output"
         )
         parser.add_argument(
             '--run', action='store_true',
@@ -529,7 +586,7 @@ class VideoProbe:
             help='Display differences between metadata'
         )
         compare_group.add_argument(
-            '--matches', action='store_true',
+            '--same', action='store_true',
             help='Display matches between metadata'
         )
 
@@ -576,7 +633,7 @@ class VideoProbe:
 
         if args.diff:
             self.compare_diff = True
-        if args.matches:
+        if args.same:
             self.compare_matches = True
 
         if args.compare and (args.source or args.dest):
